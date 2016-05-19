@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Francis Quest
+    </title>
+    <link rel="stylesheet" href="content/css/francis.css"/>
+<meta charset="UTF-8">
+</head>
+<body id="MAIN">
+
+    <!-- An Assortment of Canvases to provide the needed layers for an HTML5 Game-->
+<canvas id="battleCanvas" width=448 height=384 style="position:absolute;z-index: 0"></canvas>
+<canvas id="introCanvas" width=800 height=384 style="position:absolute;z-index: 5"></canvas>
+<canvas id="hudCanvas" width=800 height=400 style="position:absolute;z-index: 2"></canvas>
+<canvas id="gameCanvas" width=800 height=400 style="position:absolute;z-index: 1"></canvas>
+
+    <!-- Pause Menu-->
+    <div id="divLicense" style="display:none"> <!-- Pause Menu-->
+        <h4>Paused (Press "P" to Resume)</h4>
+        <p>
+            <h5>About Francis Quest</h5>
+            Art credit <a href="http://opengameart.org/content/tiny-16-basic">Lanea Zimmerman.</a><br />
+            Provided under <a href="content/licenses/OGA-BY-3.0.txt">OGA By 3.0 license</a>
+        </p>
+    </div>
+</body>
+
+</html>
+
+<link href="content/css/modal.css" type="text/css" rel="stylesheet" />
+<script src="content/js/common/jquery-1.11.3.min.js"></script>
+<script src="content/js/common/modal.js"></script>
+<script src="content/js/vector2d.js"></script>
+<script src="content/js/francisquest.js"></script>

@@ -158,7 +158,7 @@
 	intro_house.src = "content/images/tiny32.png";
 
     // requestAnimationFrame polyfill
-    // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+    // Thanks to: http://paulirish.com/2011/requestanimationframe-for-smart-animating/
     (function(){	
 		var lastTime = 0;
 		var currTime, timeToCall, id;
@@ -185,7 +185,7 @@
 				clearTimeout(id);
 			};
 		}	
-	})(); // <-- added
+	})(); 
 
     // wrapper for our game "classes", "methods" and "objects"
 	window.Game = {};

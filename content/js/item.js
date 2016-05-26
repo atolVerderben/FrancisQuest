@@ -1,20 +1,21 @@
 (function () {
-	    function Item(type, text, func) {
-	        this.rectangle = new Game.Rectangle(x, y, w, h);
+	    function Item(type, name, attributes) {
 	        
-	        this.use = func;
-	        this.text = text;
-			this.type = type;	        
-	    }
-
-	    Item.prototype.setAction = function (canvas, func) {
-	        canvas.onmouseup = function(e){
-	            var mouse = getMousePosition(e).sub(new vector2d(canvas.offsetLeft, canvas.offsetTop));
-	            if (mouse.x > this.x && mouse.x < (this.x + this.width) && mouse.y > this.y && mouse.y < (this.y + this.height)) {								
-	                func();
-	            }
-	        }
+	        this.name = name;
+			this.type = type;
+			this.attributes = attributes;	        
 	    }
 
 	    Game.Item = Item;
 	})();
+	
+(function(){
+	function ItemGenerator(type, name){
+		var item;
+		if(type == "Health Potion Small"){
+			item = new Game.Item(type, name, {attr: "health", affect: "inc", amount: Math.floor(Math.random()*10 + 1)});
+		}
+		return item;
+	}
+	Game.ItemGenerator = ItemGenerator;
+})();

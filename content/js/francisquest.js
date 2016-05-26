@@ -268,9 +268,16 @@
 								battleScene.dmgAttack = true;
 								if(battleScene.battle_baddie.health <= 0){
 									battleScene.battle_baddie.dead = true;
+									if(Math.random() <= 0.2){
+										battleScene.dropLoot = true;
+									}
 								}
-								battleScene.battleText =  player.name + " attacked "+battleScene.battle_baddie.type+" for " + attack + " dmg";
-								
+								if(battleScene.dropLoot == true){
+									battleScene.battleText = battleScene.battle_baddie.type+ " dropped a health potion!";
+									player.inventory.push(Game.ItemGenerator("Health Potion Small", "Small Health Potion"));
+								}else{
+									battleScene.battleText =  player.name + " attacked "+battleScene.battle_baddie.type+" for " + attack + " dmg";
+								}
 							}
 						}
 						
@@ -523,6 +530,21 @@
 				total += rolls[i];
 			}
 			return total;	
+		}
+		
+		Game.openInventory = function(){
+			
+			var inventoryContent = "";
+			
+			for(var i = 0; i < player.inventory.length; i++){
+				inventoryContent += "<div onclick='Game.player.useItem(\""+i+"\");modal.close();' style='cursor:pointer'>"+player.inventory[i].name+"</div>"; 
+			}
+			
+			if(inventoryContent === ""){
+				inventoryContent = "No Items in Inventory";
+			}
+			
+			modal.open({content:"<h2>Inventory</h2><br/>"+inventoryContent});
 		}	
 		
 		// ---
@@ -583,6 +605,10 @@
 				break;
 			case 80: // key P pauses the game
 				Game.togglePause();
+				break;
+			case 9: // Tab opens inventory
+				e.preventDefault();
+				Game.openInventory();
 				break;		
 		}
 	}, false);

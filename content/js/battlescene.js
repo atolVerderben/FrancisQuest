@@ -19,11 +19,14 @@
 			
 			this.battleEnded = false; // Use this for the closing statement
 			
+			this.dropLoot = false;
+			
 		}
 		
 		BattleScene.prototype.initialize = function(battleCanvas){
 			inBattle = true;
 			this.playerTurn = true;
+			this.dropLoot = false;
 			
 			battleCanvas.style.zIndex = 10;
 			var rand = Math.floor((Math.random() * 5) + 1);

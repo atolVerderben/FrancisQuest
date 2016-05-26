@@ -19,6 +19,7 @@
 			this.magicalResistancs = 10;
 			this.dead = false;
 			this.name = "Francis";
+			this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
 			
 			//statistics!
 			this.numEnemiesKilled = 0;
@@ -61,6 +62,15 @@
 		
 		Player.prototype.defend = function(enemy){
 		
+		}
+		
+		Player.prototype.useItem = function(index){
+			var attr = this.inventory[index].attributes;
+			
+			// I'll actually use the attributes in the future, for now I know it's only adding health:
+			this.health += attr.amount;
+			
+			this.inventory.splice(index,1);
 		}
 		
 		Player.prototype.update = function(step, worldWidth, worldHeight){

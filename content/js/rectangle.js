@@ -7,6 +7,9 @@
 			this.height = height || 0;
 			this.right = this.left + this.width;
 			this.bottom = this.top + this.height;
+			
+			this.x = left;
+			this.y = top;
 		}
 		
 		Rectangle.prototype.set = function(left, top, /*optional*/width, /*optional*/height){
@@ -39,6 +42,10 @@
         //Returns boolean based on point (vector2d)
 		Rectangle.prototype.pointWithin = function (p) {
 		    return (p.x > this.left && p.x < (this.left + this.width) && p.y > this.top && p.y < (this.top + this.height));
+		}
+		
+		Rectangle.prototype.coordsWithin = function(x, y){
+			return (x > this.left && x < (this.left + this.width) && y > this.top && y < (this.top + this.height));
 		}
 
 		// add "class" Rectangle to our Game object

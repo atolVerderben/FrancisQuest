@@ -7,6 +7,8 @@
 			
 			// map texture
 			this.image = null;
+			
+			this.treasure = null;
 		}
 		
 		// generate an example of a large map
@@ -17,7 +19,8 @@
 			
 			var rows = ~~(this.width/32) + 1;
 			var columns = ~~(this.height/32) + 1;
-			
+			var maxX = 0;
+			var maxY = 0;
 			var color = "green";				
 			ctx.save();			
 			//ctx.fillStyle = color;		    
@@ -46,17 +49,31 @@
 						sx = Terrain["Flowers"].x;
 						sy = Terrain["Flowers"].y;
 					}
+					
+					
 					//console.log("x: " + sx + "y: " + sy);
 					//ctx.save();
 					ctx.drawImage(texture, sx, sy, 32, 32, x, y, 32, 32);
 					//ctx.restore();
-					//ctx.rect (x, y, 32, 32);				
+					//ctx.rect (x, y, 32, 32);
+					maxY = y;				
 				}
 				//color = (color == "green" ? "blue" : "green");
 				//ctx.fillStyle = color;
 				//ctx.fill();
-				//ctx.closePath();			
-			}		
+				//ctx.closePath();
+				maxX = x;			
+			}	
+			
+			this.treasure = new Game.Rectangle(Math.floor(Math.random() * maxX), Math.floor(Math.random() * maxY), 32, 32);
+			
+					
+			//ctx.fillStyle = "black";			
+			//ctx.fillRect(this.treasure.x, this.treasure.y, this.treasure.width, this.treasure.height);
+			
+			
+			ctx.drawImage(texture, 128, 64, 32, 32, this.treasure.x, this.treasure.y, 32, 32);
+				
 			ctx.restore();	
 			
 			// store the generate map as this image texture

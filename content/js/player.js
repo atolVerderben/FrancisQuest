@@ -8,8 +8,9 @@
 			this.x = x;
 			this.y = y;
 			
-			// player statistics
-			this.health = 10;
+			// player attributes
+			this.health = 10; // restored by potion
+			this.stamina = 10; // restored by eating or potion
 			this.level = 1;
 			this.exp = 0;
 			this.exp_next_level = 100;
@@ -117,7 +118,7 @@
 			this.moving = false;
 			}
       
-			// don't let player leaves the world's boundary
+			// don't let player leave the world's boundary
 			if(this.x - this.width/2 < 0){
 				this.x = this.width/2;
 			}

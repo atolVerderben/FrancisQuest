@@ -20,13 +20,14 @@
 			this.battleEnded = false; // Use this for the closing statement
 			
 			this.dropLoot = false;
-			
+			this.failedRun = false;
 		}
 		
 		BattleScene.prototype.initialize = function(battleCanvas){
 			inBattle = true;
 			this.playerTurn = true;
 			this.dropLoot = false;
+			this.failedRun = false;
 			
 			battleCanvas.style.zIndex = 10;
 			var rand = Math.floor((Math.random() * 5) + 1);
@@ -66,7 +67,12 @@
 					
 					this.btnAttack.active = true;
 					this.btnRun.active = true;
-					this.playerTurn = !this.playerTurn;
+					if(this.playerTurn == false && this.failedRun == true){
+						this.playerTurn = false;
+						this.failedRun = false;
+					}else{
+						this.playerTurn = !this.playerTurn;
+					}
 					
 					if(this.battle_baddie.dead){
 						inBattle = false;
@@ -84,19 +90,37 @@
 				}
 			}else{
 				if(this.playerTurn === false){ // turn for the baddie to attack
-				this.dmgDisplayCounter = 0;
-				this.dmgText_Y_modifier = 0;
-				var attack = this.battle_baddie.attack(Game.player);
-				this.dmgText = "-" + attack;
-				Game.player.health -= attack;
-				this.dmgAttack = true;
-				if(Game.player.health <= 0){
-					Game.player.dead = true;
+					if(this.failedRun === true){
+						//TODO make a real turn counter
+						this.dmgDisplayCounter = 0;
+						this.dmgText_Y_modifier = 0;
+						this.dmgText = ""
+						this.dmgAttack = true;
+						this.battleText = Game.player.name + " failed to run away!";
+					}else{
+						this.dmgDisplayCounter = 0;
+						this.dmgText_Y_modifier = 0;
+						var attack = this.battle_baddie.attack(Game.player);
+						this.dmgText = "-" + attack;
+						Game.player.health -= attack;
+						this.dmgAttack = true;
+						if(Game.player.health <= 0){
+							Game.player.dead = true;
+						}
+						this.battleText = this.battle_baddie.type + " attacked " + Game.player.name + " for " + attack + " dmg";
+					}
 				}
-				this.battleText = this.battle_baddie.type + " attacked " + Game.player.name + " for " + attack + " dmg";
-			}
 			}
 			return inBattle;
+		}
+		
+		BattleScene.prototype.attemptRun = function(){
+			if(Math.random() <= 0.5){
+				battleScene
+			}else{
+				inBattle = false; //Run
+				battleCanvas.style.zIndex = 0;
+			}
 		}
 		
 		BattleScene.prototype.draw = function(ctxBattle, isDay){

@@ -42,12 +42,13 @@
 		
 		var playVideo = false;
 		var waitCounter = 0;
+		var playerWin = false;
 		
 		// setup an object that represents the room
 		var room = {
-			width: 5000,
-			height: 3000,
-			map: new Game.Map(5000, 3000)
+			width: 3000,
+			height: 2000,
+			map: new Game.Map(3000, 2000)
 		};
 		
 		// generate a large image texture for the room
@@ -219,12 +220,12 @@
         
 		//var btnTest = new Game.Button(88, 300, 100, 50, "ATTACK", null);
 		//var btnTest2 = new Game.Button(300, 300, 100, 50, "RUN", null);
-
+var encounter = 0;
 
 		// Game update function
 		var update_game = function(step){ 
 			if(!inBattle){
-				player.update(step, room.width, room.height); // <-- edited
+				player.update(step, room.width, room.height);
 				camera.update();
 				currDayCount++;
 				if(currDayCount > dayCycleCount){
@@ -243,9 +244,15 @@
 				}
 				currDayCount++;
 				
+				if(room.map.treasure.coordsWithin(player.x, player.y)){
+					playerWin = true;
+				}
+				var randomCheckCounter = 0;
 				//Random Encounter Logic
-				if(player.moving === true){
-					if(Math.floor((Math.random() * 1000) + 1) > 990){
+				if(player.moving === true && playerWin === false){
+					
+					encounter = Math.random();
+					if(encounter > 0.07 && encounter < 0.078){
 					    inBattle = true;
 						battleScene.initialize(battleCanvas);
 						
@@ -254,8 +261,14 @@
 							var mouse = getMousePosition(e).sub(new vector2d(battleCanvas.offsetLeft, battleCanvas.offsetTop)); 
 
 							if (battleScene.btnRun.rectangle.pointWithin(mouse) && battleScene.btnRun.active) {
-								inBattle = false; //Run
-								battleCanvas.style.zIndex = 0;
+								
+								if(Math.random() <= 0.5){
+									battleScene.failedRun = true;
+									battleScene.playerTurn = false;
+								}else{
+									inBattle = false; //Run
+									battleCanvas.style.zIndex = 0;
+								}
 							}
 							
 							if (battleScene.btnAttack.rectangle.pointWithin(mouse) && battleScene.btnAttack.active) {
@@ -268,7 +281,7 @@
 								battleScene.dmgAttack = true;
 								if(battleScene.battle_baddie.health <= 0){
 									battleScene.battle_baddie.dead = true;
-									if(Math.random() <= 0.2){
+									if(Math.random() <= 0.45){
 										battleScene.dropLoot = true;
 									}
 								}
@@ -444,6 +457,15 @@
 			player.animated_draw(context, camera.xView, camera.yView);
 			
 			textwriter.draw_text(ctxHUD, "Health " + player.health, "12pt Arial", 10, 10);
+			
+			if(playerWin == true){
+				context.fillStyle = 'rgba(43,43,43,0.5)';
+			    context.fillRect(0, 0, canvas.width, canvas.height);
+				
+				textwriter.draw_text(context, "Congratulations!", "32pt Arial", canvas.width/2, canvas.height/2 - 200, "center");
+				textwriter.draw_text(context, player.name + " has found the treasure and completed the quest!", "24pt Arial", canvas.width/2, canvas.height/2 - 60, "center");
+				textwriter.draw_text(context, "Enemies Defeated: " + player.numEnemiesKilled + " Damage Dealt: " + player.dmgDealt, "12pt Arial", canvas.width/2, canvas.height/2 - 20, "center");
+			}
 			
 			if(player.dead){
 				context.fillStyle = 'rgba(43,43,43,0.5)';

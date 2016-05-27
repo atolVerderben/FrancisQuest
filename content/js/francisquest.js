@@ -257,53 +257,9 @@ var encounter = 0;
 						battleScene.initialize(battleCanvas);
 						
 						// And Give those Buttons some ACTIONS
-						battleCanvas.onmouseup = function(e){
-							var mouse = getMousePosition(e).sub(new vector2d(battleCanvas.offsetLeft, battleCanvas.offsetTop)); 
-
-							if (battleScene.btnRun.rectangle.pointWithin(mouse) && battleScene.btnRun.active) {
-								
-								if(Math.random() <= 0.5){
-									battleScene.failedRun = true;
-									battleScene.playerTurn = false;
-								}else{
-									inBattle = false; //Run
-									battleCanvas.style.zIndex = 0;
-								}
-							}
-							
-							if (battleScene.btnAttack.rectangle.pointWithin(mouse) && battleScene.btnAttack.active) {
-								
-								battleScene.dmgDisplayCounter = 0;
-								battleScene.dmgText_Y_modifier = 0;
-								var attack = player.attack(battleScene.battle_baddie);
-								battleScene.dmgText = "-" + attack;
-								battleScene.battle_baddie.health -= attack;
-								battleScene.dmgAttack = true;
-								if(battleScene.battle_baddie.health <= 0){
-									battleScene.battle_baddie.dead = true;
-									if(Math.random() <= 0.45){
-										battleScene.dropLoot = true;
-									}
-								}
-								if(battleScene.dropLoot == true){
-									battleScene.battleText = battleScene.battle_baddie.type+ " dropped a health potion!";
-									player.inventory.push(Game.ItemGenerator("Health Potion Small", "Small Health Potion"));
-								}else{
-									battleScene.battleText =  player.name + " attacked "+battleScene.battle_baddie.type+" for " + attack + " dmg";
-								}
-							}
-						}
 						
-						battleCanvas.addEventListener("mousemove", function (e) {
-							var mouse = getMousePosition(e).sub(new vector2d(battleCanvas.offsetLeft, battleCanvas.offsetTop));
-							//console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
-							if (battleScene.btnAttack.rectangle.pointWithin(mouse) || battleScene.btnRun.rectangle.pointWithin(mouse)){
-								$('#battleCanvas').css('cursor', 'pointer');
-							} else {
-								$('#battleCanvas').css('cursor', 'default');
-							}
-
-						}, false);
+						
+						
 						
 					    /*battleCanvas.style.zIndex = 10;
 						var rand = Math.floor((Math.random() * 5) + 1);
@@ -544,11 +500,11 @@ var encounter = 0;
 			}
 		}
 		
-		Game.rollDie = function (number, sides, condition){
+		Game.rollDice = function (number, sides, condition){
 			condition = ((condition) ? condition : 0);
-			var rolls, total = 0;
+			var rolls = [], total = 0;
 			for(var i=0; i < number; i++){
-				rolls[i] = Math.floor((Math.random() * sides) + 1);
+				rolls.push(Math.floor((Math.random() * sides) + 1));
 				total += rolls[i];
 			}
 			return total;	
@@ -572,6 +528,9 @@ var encounter = 0;
 		// ---
     Game.player = player;
 	Game.camera = camera;
+	Game.battleCanvas = battleCanvas;
+	Game.battleScene = battleScene;
+	
 		
 	})();
 

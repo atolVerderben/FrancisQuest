@@ -1,55 +1,55 @@
 (function(){
 	    function Enemy(type, playerLevel) {
-	        playerLevel = ((playerLevel) ? playerLevel : 1);
+				playerLevel = ((playerLevel) ? playerLevel : 1);
 
-	        // Create a semi-random set up for the enemies
-	        this.level = playerLevel;
+				// Create a semi-random set up for the enemies
+				this.level = playerLevel;
 
 			
-			this.health = 25;//Game.DiceRoller.RollDie(1, 6) * this.level;//25;
-			this.phyiscalAttack = 8;
-			this.defense = 4;
-			
-			this.x = 50;
-			this.y = 50;
-			
-			this.width = 32;
-			this.height = 32;
-			this.sw = 32;
-			this.sh = 32;
-			this.moving = false;
-			
-			this.dead = false;
-			
-			// animation rules
-			this.animationStep = 1;
-			this.animationEndStep = 4;
-			this.animationCounter = 0;
-			this.animationEndCounter = 10;
-			this.animationBattleEndCounter = 50;
-			this.facing = "Down";
-			
-			this.sprite = Blob;
-			if(type == "blob"){
+				this.health = Game.rollDice(2, 12) * this.level; // 2d12 * level
+				this.phyiscalAttack = 8;
+				this.defense = 4;
+				
+				this.x = 50;
+				this.y = 50;
+				
+				this.width = 32;
+				this.height = 32;
+				this.sw = 32;
+				this.sh = 32;
+				this.moving = false;
+				
+				this.dead = false;
+				
+				// animation rules
+				this.animationStep = 1;
+				this.animationEndStep = 4;
+				this.animationCounter = 0;
+				this.animationEndCounter = 10;
+				this.animationBattleEndCounter = 50;
+				this.facing = "Down";
+				
 				this.sprite = Blob;
-			}
-			if(type == "ghost"){
-				this.sprite = Ghost;
-			}
-			if(type == "bat"){
-				this.sprite = Bat;
-			}
-			if(type == "skeleton"){
-				this.sprite = Skeleton;
-			}
-			if(type == "spider"){
-				this.sprite = Spider;
-			}
-			
-			this.type = type;
-			
-			this.sx = this.sprite["IdleDown"].x;
-			this.sy = this.sprite["IdleDown"].y;
+				if(type == "blob"){
+					this.sprite = Blob;
+				}
+				if(type == "ghost"){
+					this.sprite = Ghost;
+				}
+				if(type == "bat"){
+					this.sprite = Bat;
+				}
+				if(type == "skeleton"){
+					this.sprite = Skeleton;
+				}
+				if(type == "spider"){
+					this.sprite = Spider;
+				}
+				
+				this.type = type;
+				
+				this.sx = this.sprite["IdleDown"].x;
+				this.sy = this.sprite["IdleDown"].y;
 		}
 		
 		Enemy.prototype.attack = function(enemy){

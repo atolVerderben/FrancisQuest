@@ -5,6 +5,7 @@
 			this.btnAttack = new Game.Button(88, 300, 100, 50, "ATTACK", null);
 			this.btnRun = new Game.Button(300, 300, 100, 50, "RUN", null);
 			this.dmgAttack = false;
+			this.inBattle = false;
 			
 			this.dmgDisplayCounter = 0;
 			this.dmgDisplayLength = 30;
@@ -24,10 +25,60 @@
 		}
 		
 		BattleScene.prototype.initialize = function(battleCanvas){
-			inBattle = true;
+			//inBattle = true;
 			this.playerTurn = true;
 			this.dropLoot = false;
 			this.failedRun = false;
+			this.inBattle = true;
+			
+			battleCanvas.onmouseup = function(e){
+				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop)); 
+
+				if (Game.battleScene.btnRun.rectangle.pointWithin(mouse) && Game.battleScene.btnRun.active) {
+					
+					if(Math.random() <= 0.5){
+						Game.battleScene.failedRun = true;
+						Game.battleScene.playerTurn = false;
+					}else{
+						this.inBattle = false; //Run
+						Game.battleCanvas.style.zIndex = 0;
+					}
+				}
+				
+				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) && Game.battleScene.btnAttack.active) {
+					
+					Game.battleScene.dmgDisplayCounter = 0;
+					Game.battleScene.dmgText_Y_modifier = 0;
+					var attack = Game.player.attack(Game.battleScene.battle_baddie);
+					Game.battleScene.dmgText = "-" + attack;
+					Game.battleScene.battle_baddie.health -= attack;
+					Game.battleScene.dmgAttack = true;
+					if(Game.battleScene.battle_baddie.health <= 0){
+						Game.battleScene.battle_baddie.dead = true;
+						if(Math.random() <= 0.45){
+							Game.battleScene.dropLoot = true;
+						}
+					}
+					if(Game.battleScene.dropLoot == true){
+						Game.battleScene.battleText = Game.battleScene.battle_baddie.type+ " dropped a health potion!";
+						Game.player.inventory.push(Game.ItemGenerator("Health Potion Small", "Small Health Potion"));
+					}else{
+						Game.battleScene.battleText =  Game.player.name + " attacked "+Game.battleScene.battle_baddie.type+" for " + attack + " dmg";
+					}
+				}
+			}
+			
+			battleCanvas.addEventListener("mousemove", function (e) {
+				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop));
+				//console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
+				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) || Game.battleScene.btnRun.rectangle.pointWithin(mouse)){
+					$('#battleCanvas').css('cursor', 'pointer');
+				} else {
+					$('#battleCanvas').css('cursor', 'default');
+				}
+
+			}, false);
+			
 			
 			battleCanvas.style.zIndex = 10;
 			var rand = Math.floor((Math.random() * 5) + 1);

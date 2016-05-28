@@ -12,7 +12,8 @@
 
 		var hudCanvas = document.getElementById("hudCanvas");
 		var ctxHUD = hudCanvas.getContext("2d");
-
+		
+		var enemyList = [];
 
 	    //create background songs
 		//var backgroundMusic = document.createElement("audio");
@@ -44,18 +45,21 @@
 		var waitCounter = 0;
 		var playerWin = false;
 		
+		var worldWidth = 3000;
+		var worldHeight = 2000;
+		
 		// setup an object that represents the room
 		var room = {
-			width: 3000,
-			height: 2000,
-			map: new Game.Map(3000, 2000)
+			width: worldWidth,
+			height: worldHeight,
+			map: new Game.Map(worldWidth, worldHeight)
 		};
 		
 		// generate a large image texture for the room
 		//room.map.generate();
 		 
 		// setup player
-		var player = new Game.Player(50, 50);
+		var player = new Game.Player(worldWidth/2, worldHeight/2);
 		
 		var battle_baddie = null;
 		
@@ -162,8 +166,8 @@
 				update = update_game;
 				draw = draw_game;
 				ctxVideo.clearRect(0, 0, introCanvas.width, introCanvas.height);
-				player.x = 50;
-				player.y = 50;
+				player.x = worldWidth/2;
+				player.y = worldHeight/2;
 				player.facing = "Down";
 				//backgroundMusic.play();
 
@@ -218,14 +222,41 @@
 		}
 		var update = function (step) { }
         
-		//var btnTest = new Game.Button(88, 300, 100, 50, "ATTACK", null);
-		//var btnTest2 = new Game.Button(300, 300, 100, 50, "RUN", null);
+		
 var encounter = 0;
 
 		// Game update function
 		var update_game = function(step){ 
 			if(!inBattle){
 				player.update(step, room.width, room.height);
+				if(playerWin == false){
+					if(enemyList.length < 100){
+						var rand = Math.floor((Math.random() * 5) + 1);
+						var enemyName = "Blob";
+						if(rand == 1)
+							enemyName = "Blob";
+						else if(rand == 2)
+							enemyName = "Bat";
+						else if(rand == 3)
+							enemyName = "Ghost";
+						else if(rand == 4)
+							enemyName = "Skeleton";
+						else
+							enemyName = "Spider";
+						enemyList.push(new Game.Enemy(enemyName, 1, Math.floor(Math.random() * room.width) + 1, Math.floor(Math.random() * room.height) + 1));
+					}
+					enemyList.forEach(function(enemy){
+						if(enemy.dead){
+							enemyList.splice(enemyList.indexOf(enemy), 1);
+							return;
+						}
+						enemy.update(step, room.width, room.height);
+						if(enemy.Bounds().overlaps(player.Bounds()) && player.dead == false){//enemy.coordsWithin(player.x, player.y)){
+							inBattle = true;
+							battleScene.initialize(battleCanvas, enemy);
+						}
+					});
+				}
 				camera.update();
 				currDayCount++;
 				if(currDayCount > dayCycleCount){
@@ -246,6 +277,7 @@ var encounter = 0;
 				
 				if(room.map.treasure.coordsWithin(player.x, player.y)){
 					playerWin = true;
+					enemyList = [];
 				}
 				var randomCheckCounter = 0;
 				//Random Encounter Logic
@@ -253,64 +285,10 @@ var encounter = 0;
 					
 					encounter = Math.random();
 					if(encounter > 0.07 && encounter < 0.078){
-					    inBattle = true;
-						battleScene.initialize(battleCanvas);
-						
-						// And Give those Buttons some ACTIONS
+					    //inBattle = true;
+						//battleScene.initialize(battleCanvas);
 						
 						
-						
-						
-					    /*battleCanvas.style.zIndex = 10;
-						var rand = Math.floor((Math.random() * 5) + 1);
-						var enemyName = "blob";
-						if(rand == 1)
-							enemyName = "blob";
-						else if(rand == 2)
-							enemyName = "bat";
-						else if(rand == 3)
-							enemyName = "ghost";
-						else if(rand == 4)
-							enemyName = "skeleton";
-						else
-							enemyName = "spider";
-						battle_baddie = new Game.Enemy(enemyName);
-						
-						// And Give those Buttons some ACTIONS
-						battleCanvas.onmouseup = function(e){
-							var mouse = getMousePosition(e).sub(new vector2d(battleCanvas.offsetLeft, battleCanvas.offsetTop)); 
-
-							if (btnTest2.rectangle.pointWithin(mouse)) {
-							    inBattle = false; //Run
-							    battleCanvas.style.zIndex = 0;
-							}
-							
-							if (btnTest.rectangle.pointWithin(mouse)) {
-								
-								dmgDisplayCounter = 0;
-								dmgText_Y_modifier = 0;
-								var attack = player.attack(battle_baddie);
-								dmgText = "-" + attack;
-								battle_baddie.health -= attack;
-								dmgAttack = true;
-								if(battle_baddie.health <= 0){
-									battle_baddie.dead = true;
-								}
-							}
-						}
-						
-						battleCanvas.addEventListener("mousemove", function (e) {
-						    var mouse = getMousePosition(e).sub(new vector2d(battleCanvas.offsetLeft, battleCanvas.offsetTop));
-						    //console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
-						    if (btnTest.rectangle.pointWithin(mouse) || btnTest2.rectangle.pointWithin(mouse)){
-						        $('#battleCanvas').css('cursor', 'pointer');
-						    } else {
-						        $('#battleCanvas').css('cursor', 'default');
-						    }
-
-						}, false);*/
-						
-						//modal.open({content:"Battle has begun!"});
 					}
 				}
 			}
@@ -318,25 +296,6 @@ var encounter = 0;
 			
 				inBattle = battleScene.update(step);
 				
-				/*if(dmgAttack == true){
-					dmgDisplayCounter++;
-					if(dmgDisplayLength/dmgDisplayCounter < 4){
-						dmgText_Y_modifier++;
-					}else{
-						dmgText_Y_modifier--;
-					}
-					
-					if(dmgDisplayCounter > dmgDisplayLength){
-						dmgAttack = false;
-						dmgDisplayCounter = 0;
-						dmgText_Y_modifier = 0;
-						
-						if(battle_baddie.dead){
-						    inBattle = false;
-						    battleCanvas.style.zIndex = 0;
-						}
-					}
-				}*/
 			}
 		}
 		
@@ -411,7 +370,9 @@ var encounter = 0;
 			// redraw all objects
 			room.map.draw(context, camera.xView, camera.yView);		
 			player.animated_draw(context, camera.xView, camera.yView);
-			
+			enemyList.forEach(function(enemy){
+					enemy.draw(context, camera.xView, camera.yView);
+				});
 			textwriter.draw_text(ctxHUD, "Health " + player.health, "12pt Arial", 10, 10);
 			
 			if(playerWin == true){
@@ -587,11 +548,14 @@ var encounter = 0;
 			case 80: // key P pauses the game
 				Game.togglePause();
 				break;
-			case 9: // Tab opens inventory
-				e.preventDefault();
+			case 73: // I opens inventory
+				
 				Game.openInventory();
 				break;		
 		}
+		
+		e.preventDefault();
+		return false;
 	}, false);
 
 	// -->
@@ -608,12 +572,6 @@ var encounter = 0;
 		Game.player.setgender(gender);
 		Game.init();
 		document.getElementById("introCanvas").style.zIndex=0;
-		//modal.close();
-		//modal.open({content:"There's not much to do, but here are the basics:<br/><br/>\
-		//					<div style='text-align:center'><b>Controls:</b><br/>\
-		//					Arrow Keys To Move<br/>'P' to Pause<br/>\
-		//					<input type='button' value='Okay Got It!' onclick='modal.close();Game.init();' /></div>"
-		//			});
 	}
 	
 	function getMousePosition(e){

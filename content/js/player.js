@@ -39,6 +39,7 @@
 			this.sh = 32;
 			this.facing = "Down";
 			this.moving = false;
+			this.dirChangeCoolDown = 0;
       
 			// animation rules
 			this.animationStep = 1;
@@ -74,6 +75,10 @@
 			this.inventory.splice(index,1);
 		}
 		
+		Player.prototype.Bounds = function(){
+			return new Game.Rectangle(this.x, this.y, this.width, this.height);
+		}
+		
 		Player.prototype.update = function(step, worldWidth, worldHeight){
 			// parameter step is the time between frames ( in seconds )
 			//document.getElementById("txtFacing").value = this.facing;
@@ -87,36 +92,64 @@
 			
 			if(Game.controls.left){
 				if(this.moving && (this.facing == "Up" || this.facing == "Down")){}else{
-						  this.x -= this.speed * step;
+					if(this.facing == "Left"){
+						this.moving = true;
+					}else{
+						this.dirChangeCoolDown++;
+					}	  
 				  this.facing = "Left";
-				  this.moving = true;
+				  
 				}
 			}
 			if(Game.controls.up){
 				if(this.moving && (this.facing == "Left" || this.facing == "Right")){}else{
-					this.y -= this.speed * step;
+					//this.y -= this.speed * step;
+					if(this.facing == "Up"){
+						this.moving = true;
+					}else{
+						this.dirChangeCoolDown++;
+					}
 					this.facing = "Up";
-					this.moving = true;
+					
 				}
 			}
 			if(Game.controls.right){
 				if((this.moving && this.facing == "Up") || (this.moving && this.facing == "Down")){}else{
-					  this.x += this.speed * step;
+					  //this.x += this.speed * step;
+					  if(this.facing == "Right"){
+						this.moving = true;
+					}else{
+						this.dirChangeCoolDown++;
+					}
 					this.facing = "Right";
-					this.moving = true;
+					
 				}
 			}
 			if(Game.controls.down){
 				if(this.moving && (this.facing == "Left" || this.facing == "Right")){}else{
-					this.y += this.speed * step;
+					//this.y += this.speed * step;
+					if(this.facing == "Down"){
+						this.moving = true;
+					}else{
+						this.dirChangeCoolDown++;
+					}
 					this.facing = "Down";
-					this.moving = true;
+					//this.moving = true;
 				}
 			}
 
 			if(!(Game.controls.down || Game.controls.up || Game.controls.left || Game.controls.right)){
 			this.moving = false;
 			}
+			
+			if(this.dirChangeCoolDown > 0 && this.dirChangeCoolDown < 4){ // delay slightly to allow turning without moving
+				this.dirChangeCoolDown++;
+				this.moving = false;
+			}else{
+				this.dirChangeCoolDown = 0;
+			}
+			if(this.moving)
+				this.move(this.facing, step);
       
 			// don't let player leave the world's boundary
 			if(this.x - this.width/2 < 0){
@@ -133,6 +166,23 @@
 			}
 			
 			
+		}
+		
+		Player.prototype.move = function(direction, step){
+			switch(direction){
+				case "Left":
+					this.x -= this.speed * step;
+					break;
+				case "Right":
+					this.x += this.speed * step;
+					break;
+				case "Down":
+					this.y += this.speed * step;
+					break;
+				case "Up":
+					this.y -= this.speed * step;
+					break;	
+			}
 		}
 		
 		Player.prototype.draw = function(context, xView, yView){		

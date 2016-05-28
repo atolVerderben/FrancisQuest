@@ -24,7 +24,7 @@
 			this.failedRun = false;
 		}
 		
-		BattleScene.prototype.initialize = function(battleCanvas){
+		BattleScene.prototype.initialize = function(battleCanvas, baddie){
 			//inBattle = true;
 			this.playerTurn = true;
 			this.dropLoot = false;
@@ -40,7 +40,7 @@
 						Game.battleScene.failedRun = true;
 						Game.battleScene.playerTurn = false;
 					}else{
-						this.inBattle = false; //Run
+						Game.battleScene.inBattle = false; //Run
 						Game.battleCanvas.style.zIndex = 0;
 					}
 				}
@@ -81,25 +81,32 @@
 			
 			
 			battleCanvas.style.zIndex = 10;
-			var rand = Math.floor((Math.random() * 5) + 1);
-			var enemyName = "blob";
-			if(rand == 1)
-				enemyName = "blob";
-			else if(rand == 2)
-				enemyName = "bat";
-			else if(rand == 3)
-				enemyName = "ghost";
-			else if(rand == 4)
-				enemyName = "skeleton";
-			else
-				enemyName = "spider";
-			this.battle_baddie = new Game.Enemy(enemyName);
-			this.battleText = "A " + enemyName + " appears!";
+			
+			if(baddie){
+				this.battle_baddie = baddie;
+			}else{
+				
+				var rand = Math.floor((Math.random() * 5) + 1);
+				var enemyName = "Blob";
+				if(rand == 1)
+					enemyName = "Blob";
+				else if(rand == 2)
+					enemyName = "Bat";
+				else if(rand == 3)
+					enemyName = "Ghost";
+				else if(rand == 4)
+					enemyName = "Skeleton";
+				else
+					enemyName = "Spider";
+				this.battle_baddie = new Game.Enemy(enemyName);
+			}
+			
+			this.battleText = "A " + this.battle_baddie.type + " appears!";
 			
 		}
 		
 		BattleScene.prototype.update = function(step){
-			var inBattle = true;
+			//var inBattle = true;
 			
 			
 			
@@ -126,12 +133,12 @@
 					}
 					
 					if(this.battle_baddie.dead){
-						inBattle = false;
+						this.inBattle = false;
 						battleCanvas.style.zIndex = 0;
 						Game.player.numEnemiesKilled += 1;
 					}
 					if(Game.player.dead){
-						inBattle = false;
+						this.inBattle = false;
 						battleCanvas.style.zIndex = 0;
 					}
 					
@@ -162,7 +169,7 @@
 					}
 				}
 			}
-			return inBattle;
+			return this.inBattle;
 		}
 		
 		BattleScene.prototype.attemptRun = function(){

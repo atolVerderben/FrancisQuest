@@ -21,6 +21,10 @@
 			this.dead = false;
 			this.name = "Francis";
 			this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
+			this.maxHealth = this.setMaxHealth();
+			
+			this.exitBattle = 0; // used as a cooldown so you can actually run from a battle and aren't constantly bombarded
+			
 			
 			//statistics!
 			this.numEnemiesKilled = 0;
@@ -53,6 +57,10 @@
 			this.name = ((gender == "male")?"Francis":"Frances");
 		}
 		
+		Player.prototype.setMaxHealth = function(){
+			return (10 + (5 * this.level));
+		}
+		
 		Player.prototype.attack = function(enemy){
 			var rawAttack = Math.floor(this.physicalAttack * (Math.random() +1));
 			var dealtDmg = rawAttack - enemy.defense;
@@ -64,6 +72,21 @@
 		
 		Player.prototype.defend = function(enemy){
 		
+		}
+		
+		Player.prototype.levelUp = function(){
+			this.level++;
+		}
+		
+		Player.prototype.reset = function(){
+			this.health = 10;
+			this.level = 1;
+			this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
+			this.maxHealth = this.setMaxHealth();
+			
+			this.numEnemiesKilled = 0;
+			this.dmgDealt = 0;
+			this.exitBattle = 0;
 		}
 		
 		Player.prototype.useItem = function(index){
@@ -88,6 +111,12 @@
 			
 			if(this.dead){
 				return;
+			}
+			if(this.exitBattle > 0 ){
+				this.exitBattle++;
+				if(this.exitBattle > 20){
+					this.exitBattle = 0;
+				}
 			}
 			
 			if(Game.controls.left){

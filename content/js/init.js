@@ -189,3 +189,74 @@
 
     // wrapper for our game "classes", "methods" and "objects"
 	window.Game = {};
+    
+    
+    
+    
+    // A few more global functions
+    
+    function getMousePosition(e){
+		if (!e){
+			var e = window.event;
+		}
+		if (e.pageX || e.pageY){
+			return new vector2d(e.pageX, e.pageY);
+		} else if (e.clientX || e.clientY){
+			return new vector2d(e.clientX, e.clientY);
+		}
+	}
+	
+	// Function to draw a circle in canvas
+	function circle(ctx,x,y,r) {
+	  ctx.beginPath();
+	  ctx.arc(x, y, r, 0, Math.PI*2, true);
+	  ctx.closePath();
+	  ctx.fill();
+	}
+	
+	function resizeCanvas() {
+	    var canvas = document.getElementById("gameCanvas");
+	    var hudCanvas = document.getElementById("hudCanvas");
+
+
+		var winSize = getWindowSize();
+		var dragsize = winSize.height - 20;
+
+		if (dragsize > 0){
+		   canvas.height = dragsize;
+		   canvas.width = winSize.width - 20;
+
+		   hudCanvas.height = dragsize;
+		   hudCanvas.width = winSize.width - 20;
+
+		   }
+		
+		// When the canvas is resized we need to update the camera parameters as well to center on the character.
+		Game.camera.wView = canvas.width;
+		Game.camera.hView = canvas.height;
+		Game.camera.xDeadZone = canvas.width/2;
+		Game.camera.yDeadZone = canvas.height/2;
+		
+		Game.camera.viewportRect = new Game.Rectangle(Game.camera.xView, Game.camera.yView, Game.camera.wView, Game.camera.hView);	
+		
+		return false;
+	}
+	
+	function getWindowSize() {
+		var myWidth = 0, myHeight = 0;
+		if (typeof (window.innerWidth) == 'number') {
+			//Non-IE
+			myWidth = window.innerWidth;
+			myHeight = window.innerHeight;
+		} else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+			//IE 6+ in 'standards compliant mode'
+			myWidth = document.documentElement.clientWidth;
+			myHeight = document.documentElement.clientHeight;
+		} else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
+			//IE 4 compatible
+			myWidth = document.body.clientWidth;
+			myHeight = document.body.clientHeight;
+		}
+		return { width: myWidth, height: myHeight };
+	}
+	window.onresize = function () { resizeCanvas(); };

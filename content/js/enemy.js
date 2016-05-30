@@ -8,7 +8,7 @@
 				this.level = playerLevel;
 
 			
-				this.health = Game.rollDice(4, 12) * this.level; // 2d12 * level
+				this.health = Game.rollDice(this.level, 12);
 				this.phyiscalAttack = 8;
 				this.defense = 4;
 				

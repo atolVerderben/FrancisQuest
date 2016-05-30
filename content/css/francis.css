@@ -45,3 +45,53 @@ a:link {
 a:visited {
     color: #30346d;
 }
+
+/*  These are for reference of the colors for easier development  */
+.black{
+    color: #140c1c
+}
+.green{
+    color: #346524
+}
+.darkBrown{
+    color: #442434
+}
+.lightBrown{
+    color: #854c30
+}
+.red{
+    color: #d04648
+}
+.blue{
+    color: #597dce
+}
+.lightGray{
+    color: #8595a1
+}
+.pink{
+    color: #d2aa99
+}
+.gold{
+    color: #dad45e
+}
+.darkBlue{
+    color: #30346d
+}
+.darkGray{
+    color: #4e4a4e
+}
+.gray{
+    color: #757161
+}
+.orange{
+    color: #d27d2c
+}
+.lightGreen{
+    color: #6daa2c
+}
+.lightBlue{
+    color: #6dc2ca
+}
+.white{
+    color: #deeed6
+}

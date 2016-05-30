@@ -221,7 +221,8 @@
 			player.update(step, 800, 436);
 		}
 		var update = function (step) { }
-        
+     var btnRestart = new Game.Button(hudCanvas.width/2 + hudCanvas.offsetLeft - 125, hudCanvas.height/2 + 350, 100, 100, "Restart", null);
+	 var btnNextLevel = new Game.Button(hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Next Level", null);
 		
 var encounter = 0;
 
@@ -230,7 +231,7 @@ var encounter = 0;
 			if(!inBattle){
 				player.update(step, room.width, room.height);
 				if(playerWin == false){
-					if(enemyList.length < 100){
+					if(enemyList.length < 50 + (50 * player.level)){
 						var rand = Math.floor((Math.random() * 5) + 1);
 						var enemyName = "Blob";
 						if(rand == 1)
@@ -243,7 +244,7 @@ var encounter = 0;
 							enemyName = "Skeleton";
 						else
 							enemyName = "Spider";
-						enemyList.push(new Game.Enemy(enemyName, 1, Math.floor(Math.random() * room.width) + 1, Math.floor(Math.random() * room.height) + 1));
+						enemyList.push(new Game.Enemy(enemyName, player.level, Math.floor(Math.random() * room.width) + 1, Math.floor(Math.random() * room.height) + 1));
 					}
 					enemyList.forEach(function(enemy){
 						if(enemy.dead){
@@ -251,11 +252,54 @@ var encounter = 0;
 							return;
 						}
 						enemy.update(step, room.width, room.height);
-						if(enemy.Bounds().overlaps(player.Bounds()) && player.dead == false){//enemy.coordsWithin(player.x, player.y)){
+						if(enemy.Bounds().overlaps(player.Bounds()) && player.dead == false && player.exitBattle == 0){//enemy.coordsWithin(player.x, player.y)){
 							inBattle = true;
 							battleScene.initialize(battleCanvas, enemy);
 						}
 					});
+				}else{
+					hudCanvas.onmouseup = function(e){
+						var mouse = getMousePosition(e).sub(new vector2d(hudCanvas.offsetLeft, hudCanvas.offsetTop));
+						if(btnRestart.rectangle.pointWithin(mouse)){
+							Game.restart();
+						}
+						if(btnNextLevel.rectangle.pointWithin(mouse)){
+							nextLevel();//Game.init();
+						}
+					}
+					
+					hudCanvas.addEventListener("mousemove", function(e){
+						var mouse = getMousePosition(e).sub(new vector2d(hudCanvas.offsetLeft, hudCanvas.offsetTop));
+						//console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
+						if (btnRestart.rectangle.pointWithin(mouse)) {
+							$('#hudCanvas').css('cursor', 'pointer');
+						}else if (btnNextLevel.rectangle.pointWithin(mouse)) {
+							$('#hudCanvas').css('cursor', 'pointer');
+						} else {
+							$('#hudCanvas').css('cursor', 'default');
+						}
+					
+					}, false);
+				}
+				if(player.dead){
+					hudCanvas.onmouseup = function(e){
+						var mouse = getMousePosition(e).sub(new vector2d(hudCanvas.offsetLeft, hudCanvas.offsetTop));
+						if(btnRestart.rectangle.pointWithin(mouse)){
+							Game.restart();
+						}
+						
+					}
+					
+					hudCanvas.addEventListener("mousemove", function(e){
+						var mouse = getMousePosition(e).sub(new vector2d(hudCanvas.offsetLeft, hudCanvas.offsetTop));
+						//console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
+						if (btnRestart.rectangle.pointWithin(mouse)) {
+							$('#hudCanvas').css('cursor', 'pointer');
+						}else {
+							$('#hudCanvas').css('cursor', 'default');
+						}
+					
+					}, false);
 				}
 				camera.update();
 				currDayCount++;
@@ -297,6 +341,25 @@ var encounter = 0;
 				inBattle = battleScene.update(step);
 				
 			}
+		}
+		
+		//var setLevelWinButtons
+		
+		var nextLevel = function(){
+			hudCanvas.onmouseup = function(e){};
+			$("#hudCanvas").off();
+			player.levelUp();
+			playerWin = false;
+			player.dead = false;
+			room = {
+				width: worldWidth + 1000,
+				height: worldHeight + 1000,
+				map: new Game.Map(worldWidth + 1000, worldHeight + 1000)
+			};
+			room.map.generate();
+			player.x = room.width/2;
+			player.y = room.height/2;
+			camera.resetWorld(room.width, room.height);
 		}
 		
 		var intro = function(){
@@ -373,7 +436,8 @@ var encounter = 0;
 			enemyList.forEach(function(enemy){
 					enemy.draw(context, camera.xView, camera.yView);
 				});
-			textwriter.draw_text(ctxHUD, "Health " + player.health, "12pt Arial", 10, 10);
+			textwriter.draw_text(ctxHUD, "Health " + player.health, "12pt Arial", 10, 20);
+			textwriter.draw_text(ctxHUD, "Level " + player.level, "12pt Arial", 150, 20);
 			
 			if(playerWin == true){
 				context.fillStyle = 'rgba(43,43,43,0.5)';
@@ -382,6 +446,8 @@ var encounter = 0;
 				textwriter.draw_text(context, "Congratulations!", "32pt Arial", canvas.width/2, canvas.height/2 - 200, "center");
 				textwriter.draw_text(context, player.name + " has found the treasure and completed the quest!", "24pt Arial", canvas.width/2, canvas.height/2 - 60, "center");
 				textwriter.draw_text(context, "Enemies Defeated: " + player.numEnemiesKilled + " Damage Dealt: " + player.dmgDealt, "12pt Arial", canvas.width/2, canvas.height/2 - 20, "center");
+				btnRestart.draw(ctxHUD);
+				btnNextLevel.draw(ctxHUD);
 			}
 			
 			if(player.dead){
@@ -391,6 +457,7 @@ var encounter = 0;
 					canvas.width/2 - 32, canvas.height/2, 64, 64);
 				textwriter.draw_text(context, player.name + " has fallen. Refresh to try again.", "12pt Arial", canvas.width/2, canvas.height/2 - 60, "center");
 				textwriter.draw_text(context, "Enemies Defeated: " + player.numEnemiesKilled + " Damage Dealt: " + player.dmgDealt, "12pt Arial", canvas.width/2, canvas.height/2 - 40, "center");
+				btnRestart.draw(ctxHUD);	
 			}
 			
 			if(!isDay){
@@ -424,8 +491,34 @@ var encounter = 0;
             runningId = requestAnimationFrame(gameLoop); // <-- added
 		}
 		
+		Game.restart = function(){
+			hudCanvas.onmouseup = function(e){};
+			$("#hudCanvas").off();
+			isDay = true;
+			currDayCount = 0;
+			$("#MAIN").css("background-color", "#deeed6");
+			//hudCanvas
+			ctxHUD.clearRect(0, 0, canvas.width, canvas.height);
+			draw = intro;
+			playerWin = false;
+			player.dead = false;
+			player.reset();
+			room.map.generate();
+			player.x = 230;
+			player.y = 32;
+			update = function(step){};//introMovie;
+			playVideo = false;
+			document.getElementById("introCanvas").style.zIndex=500;
+			camera.resetWorld(room.width, room.height);
+			//draw = draw_game;
+			//ctxVideo.clearRect(0, 0, introCanvas.width, introCanvas.height);
+			//Game.play();
+		}
 		
 		Game.init = function(){
+			draw = intro;
+			playerWin = false;
+			player.dead = false;
 			room.map.generate();
 			player.x = 230;
 			player.y = 32;
@@ -436,6 +529,8 @@ var encounter = 0;
 			//ctxVideo.clearRect(0, 0, introCanvas.width, introCanvas.height);
 			//Game.play();
 		}
+		
+		
 		
         // ---configure play/pause capabilities:
 		
@@ -453,7 +548,7 @@ var encounter = 0;
 			}
 			else
 			{
-			modal.open({content:$("#divLicense").html()});
+			modal.open({content:document.getElementById("divLicense").innerHTML});
 				cancelAnimationFrame(runningId);
 				runningId = -1;
 				console.log("paused");
@@ -574,68 +669,4 @@ var encounter = 0;
 		document.getElementById("introCanvas").style.zIndex=0;
 	}
 	
-	function getMousePosition(e){
-		if (!e){
-			var e = window.event;
-		}
-		if (e.pageX || e.pageY){
-			return new vector2d(e.pageX, e.pageY);
-		} else if (e.clientX || e.clientY){
-			return new vector2d(e.clientX, e.clientY);
-		}
-	}
 	
-	// Function to draw a circle in canvas
-	function circle(ctx,x,y,r) {
-	  ctx.beginPath();
-	  ctx.arc(x, y, r, 0, Math.PI*2, true);
-	  ctx.closePath();
-	  ctx.fill();
-	}
-	
-	function resizeCanvas() {
-	    var canvas = document.getElementById("gameCanvas");
-	    var hudCanvas = document.getElementById("hudCanvas");
-
-
-		var winSize = getWindowSize();
-		var dragsize = winSize.height - 20;
-
-		if (dragsize > 0){
-		   canvas.height = dragsize;
-		   canvas.width = winSize.width - 20;
-
-		   hudCanvas.height = dragsize;
-		   hudCanvas.width = winSize.width - 20;
-
-		   }
-		
-		// When the canvas is resized we need to update the camera parameters as well to center on the character.
-		Game.camera.wView = canvas.width;
-		Game.camera.hView = canvas.height;
-		Game.camera.xDeadZone = canvas.width/2;
-		Game.camera.yDeadZone = canvas.height/2;
-		
-		Game.camera.viewportRect = new Game.Rectangle(Game.camera.xView, Game.camera.yView, Game.camera.wView, Game.camera.hView);	
-		
-		return false;
-	}
-	
-	function getWindowSize() {
-		var myWidth = 0, myHeight = 0;
-		if (typeof (window.innerWidth) == 'number') {
-			//Non-IE
-			myWidth = window.innerWidth;
-			myHeight = window.innerHeight;
-		} else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
-			//IE 6+ in 'standards compliant mode'
-			myWidth = document.documentElement.clientWidth;
-			myHeight = document.documentElement.clientHeight;
-		} else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
-			//IE 4 compatible
-			myWidth = document.body.clientWidth;
-			myHeight = document.body.clientHeight;
-		}
-		return { width: myWidth, height: myHeight };
-	}
-	window.onresize = function () { resizeCanvas(); };

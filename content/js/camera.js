@@ -36,6 +36,11 @@
 			// rectangle that represents the world's boundary (room's boundary)
 			this.worldRect = new Game.Rectangle(0, 0, worldWidth, worldHeight);			
 		}
+		
+		Camera.prototype.resetWorld = function (worldWidth, worldHeight){
+			// rectangle that represents the world's boundary (room's boundary)
+			this.worldRect = new Game.Rectangle(0, 0, worldWidth, worldHeight);	
+		}
 
 		// gameObject needs to have "x" and "y" properties (as world(or room) position)
 		Camera.prototype.follow = function(gameObject, xDeadZone, yDeadZone)

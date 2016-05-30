@@ -31,6 +31,7 @@
 			this.failedRun = false;
 			this.inBattle = true;
 			
+			// Add actions to the buttons
 			battleCanvas.onmouseup = function(e){
 				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop)); 
 
@@ -42,6 +43,7 @@
 					}else{
 						Game.battleScene.inBattle = false; //Run
 						Game.battleCanvas.style.zIndex = 0;
+						Game.player.exitBattle = 1;
 					}
 				}
 				
@@ -188,7 +190,8 @@
 				ctxBattle.drawImage(battle_scene_outside_night, 0, 0);
 			}
 			
-			
+			this.textWriter.draw_text(ctxBattle, this.battle_baddie.type + ": " + this.battle_baddie.health + " HP", 
+			"12pt Arial", battleCanvas.width - (battleCanvas.width/8), 20, "center", "#8595a1");
 			
 			
 			this.battle_baddie.draw_battle_scene(ctxBattle);

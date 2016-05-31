@@ -20,7 +20,8 @@
 			this.magicalResistancs = 10;
 			this.dead = false;
 			this.name = "Francis";
-			this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
+			this.inventory = new Game.Inventory();
+			//this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
 			this.maxHealth = this.setMaxHealth();
 			
 			this.exitBattle = 0; // used as a cooldown so you can actually run from a battle and aren't constantly bombarded
@@ -81,7 +82,7 @@
 		Player.prototype.reset = function(){
 			this.health = 10;
 			this.level = 1;
-			this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
+			this.inventory = new Game.Inventory();//[Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
 			this.maxHealth = this.setMaxHealth();
 			
 			this.numEnemiesKilled = 0;
@@ -90,12 +91,12 @@
 		}
 		
 		Player.prototype.useItem = function(index){
-			var attr = this.inventory[index].attributes;
+			var attr = this.inventory.useItem(index).attributes;//this.inventory[index].attributes;
 			
 			// I'll actually use the attributes in the future, for now I know it's only adding health:
 			this.health += attr.amount;
 			
-			this.inventory.splice(index,1);
+			//this.inventory.splice(index,1);
 		}
 		
 		Player.prototype.Bounds = function(){

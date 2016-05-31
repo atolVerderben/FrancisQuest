@@ -91,6 +91,9 @@
 		}
 		
 		Enemy.prototype.update = function(step, worldWidth, worldHeight){
+			if(this.dead){
+				return;
+			}
 			if(!this.moving){
 				if(Math.random() > 0.5){
 					this.moving = true;

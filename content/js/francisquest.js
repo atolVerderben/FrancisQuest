@@ -247,14 +247,17 @@ var encounter = 0;
 						enemyList.push(new Game.Enemy(enemyName, player.level, Math.floor(Math.random() * room.width) + 1, Math.floor(Math.random() * room.height) + 1));
 					}
 					enemyList.forEach(function(enemy){
-						if(enemy.dead){
-							enemyList.splice(enemyList.indexOf(enemy), 1);
-							return;
-						}
+						//if(enemy.dead){
+						//	enemyList.splice(enemyList.indexOf(enemy), 1);
+						//	return;
+						//}
 						enemy.update(step, room.width, room.height);
 						if(enemy.Bounds().overlaps(player.Bounds()) && player.dead == false && player.exitBattle == 0){//enemy.coordsWithin(player.x, player.y)){
-							inBattle = true;
-							battleScene.initialize(battleCanvas, enemy);
+							if(!enemy.dead){
+								
+							
+							Game.startBattle(enemy);
+							}
 						}
 					});
 				}else{
@@ -460,6 +463,10 @@ var encounter = 0;
 				btnRestart.draw(ctxHUD);	
 			}
 			
+			if(player.inventory.open){
+				player.inventory.draw(ctxHUD, hudCanvas);
+			}
+			
 			if(!isDay){
 			    context.fillStyle = 'rgba(43,43,43,0.5)';
 			    context.fillRect(0, 0, canvas.width, canvas.height);
@@ -566,19 +573,16 @@ var encounter = 0;
 			return total;	
 		}
 		
+		Game.startBattle = function(enemy){
+			inBattle = true;
+			battleScene.initialize(battleCanvas, enemy);
+		}
+		
 		Game.openInventory = function(){
 			
-			var inventoryContent = "";
 			
-			for(var i = 0; i < player.inventory.length; i++){
-				inventoryContent += "<div onclick='Game.player.useItem(\""+i+"\");modal.close();' style='cursor:pointer'>"+player.inventory[i].name+"</div>"; 
-			}
+			player.inventory.openInventory();
 			
-			if(inventoryContent === ""){
-				inventoryContent = "No Items in Inventory";
-			}
-			
-			modal.open({content:"<h2>Inventory</h2><br/>"+inventoryContent});
 		}	
 		
 		// ---

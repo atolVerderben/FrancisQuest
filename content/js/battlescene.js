@@ -63,7 +63,7 @@
 					}
 					if(Game.battleScene.dropLoot == true){
 						Game.battleScene.battleText = Game.battleScene.battle_baddie.type+ " dropped a health potion!";
-						Game.player.inventory.push(Game.ItemGenerator("Health Potion Small", "Small Health Potion"));
+						Game.player.inventory.addItem(Game.ItemGenerator("Health Potion Small", "Small Health Potion"));
 					}else{
 						Game.battleScene.battleText =  Game.player.name + " attacked "+Game.battleScene.battle_baddie.type+" for " + attack + " dmg";
 					}

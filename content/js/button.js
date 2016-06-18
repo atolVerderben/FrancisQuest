@@ -1,5 +1,5 @@
 (function () {
-	    function Button(x, y, w, h, text, func) {
+	    function Button(id, x, y, w, h, text, func) {
 	        this.rectangle = new Game.Rectangle(x, y, w, h);
 	        this.x = x;
 	        this.y = y;
@@ -7,8 +7,15 @@
 	        this.height = h;
 	        this.pressed = func;
 	        this.text = text;
-			this.active = true;	        
+			this.active = true;
+			this.id = id;	     
 	    }
+		
+		Button.prototype.createHtml = function(func) {
+			$("#MAIN").append("<div class='interfaceButton' style='width:"+this.width+
+				"; height:" + this.height + "; top:" + this.y + "; left:" + this.x +
+				";' onclick='' ></div>");
+		}
 
 	    Button.prototype.setAction = function (canvas, func) {
 	        canvas.onmouseup = function(e){

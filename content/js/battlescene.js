@@ -1,9 +1,18 @@
 (function(){
-		
+
 		function BattleScene(){
+			
+			
+			this.commands = {
+				ATTACK : "Attack Command",
+				RUN : "Run Command",
+				NOACTION : "Wait for next action",
+			}
+			
+			
 			this.battle_baddie = null;
-			this.btnAttack = new Game.Button(88, 300, 100, 50, "ATTACK", null);
-			this.btnRun = new Game.Button(300, 300, 100, 50, "RUN", null);
+			this.btnAttack = new Game.Button("btnAttack", 88, 300, 100, 50, "ATTACK", null);
+			this.btnRun = new Game.Button("btnRun", 300, 300, 100, 50, "RUN", null);
 			this.dmgAttack = false;
 			this.inBattle = false;
 			
@@ -14,6 +23,15 @@
 			this.dmgText_Y_modifier = 0;
 			
 			this.playerTurn = true;
+			this.playerAction = false;
+			
+			this.announcement = false;
+			this.announceTick = 0;
+			this.announceLength = 10;
+			
+			this.attacking = false;
+			this.actionTaken = this.commands.NOACTION;
+			
 			this.textWriter = new Game.TextWriter();
 			
 			this.battleText = "Begin Battle";
@@ -22,6 +40,8 @@
 			
 			this.dropLoot = false;
 			this.failedRun = false;
+			
+			
 		}
 		
 		BattleScene.prototype.initialize = function(battleCanvas, baddie){
@@ -30,45 +50,37 @@
 			this.dropLoot = false;
 			this.failedRun = false;
 			this.inBattle = true;
+			this.announcement = false;
+			this.announceTick = 0;
+			this.playerAction = false;
+			this.attacking = false;
+			this.actionTaken = this.commands.NOACTION;
+			this.dmgAttack = false;
 			
 			// Add actions to the buttons
 			battleCanvas.onmouseup = function(e){
 				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop)); 
 
-				if (Game.battleScene.btnRun.rectangle.pointWithin(mouse) && Game.battleScene.btnRun.active) {
+				if (this.btnRun.rectangle.pointWithin(mouse) && this.btnRun.active) {
 					
+					this.actionTaken = this.commands.RUN;
+					// delete from here
 					if(Math.random() <= 0.5){
-						Game.battleScene.failedRun = true;
-						Game.battleScene.playerTurn = false;
+						this.failedRun = true;
+						this.playerTurn = false;
 					}else{
-						Game.battleScene.inBattle = false; //Run
+						this.inBattle = false; //Run
 						Game.battleCanvas.style.zIndex = 0;
 						Game.player.exitBattle = 1;
 					}
 				}
 				
-				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) && Game.battleScene.btnAttack.active) {
+				if (this.btnAttack.rectangle.pointWithin(mouse) && this.btnAttack.active) {
 					
-					Game.battleScene.dmgDisplayCounter = 0;
-					Game.battleScene.dmgText_Y_modifier = 0;
-					var attack = Game.player.attack(Game.battleScene.battle_baddie);
-					Game.battleScene.dmgText = "-" + attack;
-					Game.battleScene.battle_baddie.health -= attack;
-					Game.battleScene.dmgAttack = true;
-					if(Game.battleScene.battle_baddie.health <= 0){
-						Game.battleScene.battle_baddie.dead = true;
-						if(Math.random() <= 0.45){
-							Game.battleScene.dropLoot = true;
-						}
-					}
-					if(Game.battleScene.dropLoot == true){
-						Game.battleScene.battleText = Game.battleScene.battle_baddie.type+ " dropped a health potion!";
-						Game.player.inventory.addItem(Game.ItemGenerator("Health Potion Small", "Small Health Potion"));
-					}else{
-						Game.battleScene.battleText =  Game.player.name + " attacked "+Game.battleScene.battle_baddie.type+" for " + attack + " dmg";
-					}
+					this.playerAction = true;
+					this.actionTaken = this.commands.ATTACK;
 				}
-			}
+			}.bind(this);
 			
 			battleCanvas.addEventListener("mousemove", function (e) {
 				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop));
@@ -107,70 +119,132 @@
 			
 		}
 		
+		
+		BattleScene.prototype.enemyAttack = function(){
+			// Enemy attack
+			this.dmgDisplayCounter = 0;
+			this.dmgText_Y_modifier = 0;
+			var attack = this.battle_baddie.attack(Game.player);
+			this.dmgText = "-" + attack;
+			Game.player.health -= attack;
+			this.dmgAttack = true;
+			this.actionTaken = true;
+			if(Game.player.health <= 0){
+				Game.player.dead = true;
+			}
+			this.battleText = this.battle_baddie.type + " attacked " + Game.player.name + " for " + attack + " dmg";
+			this.announcement = true;
+			//this.playerTurn = true;
+		}
+		
 		BattleScene.prototype.update = function(step){
 			//var inBattle = true;
 			
-			
-			
-			if(this.dmgAttack == true){
-				this.dmgDisplayCounter++;
-				if(this.dmgDisplayLength/this.dmgDisplayCounter < 4){
-					this.dmgText_Y_modifier++;
-				}else{
-					this.dmgText_Y_modifier--;
-				}
+			// Show battle text to the player
+			if(this.announcement){
+				this.actionTaken = this.commands.NOACTION
+				this.announceTick++;
 				
-				if(this.dmgDisplayCounter > this.dmgDisplayLength){
-					this.dmgAttack = false;
-					this.dmgDisplayCounter = 0;
-					this.dmgText_Y_modifier = 0;
+				
+				
+				if(this.dmgAttack == true){
+					this.dmgDisplayCounter++;
+					if(this.dmgDisplayLength/this.dmgDisplayCounter < 4){
+						this.dmgText_Y_modifier++;
+					}else{
+						this.dmgText_Y_modifier--;
+					}
 					
-					this.btnAttack.active = true;
-					this.btnRun.active = true;
-					if(this.playerTurn == false && this.failedRun == true){
+					if(this.dmgDisplayCounter > this.dmgDisplayLength){
+						this.dmgAttack = false;
+						this.playerAction = false;
+						this.dmgDisplayCounter = 0;
+						this.dmgText_Y_modifier = 0;
+						
+						this.btnAttack.active = true;
+						this.btnRun.active = true;
+						
+						if(this.battle_baddie.dead){
+							this.inBattle = false;
+							battleCanvas.style.zIndex = 0;
+							Game.player.exitBattle = 1;
+							Game.player.numEnemiesKilled += 1;
+						}
+						if(Game.player.dead){
+							this.inBattle = false;
+							battleCanvas.style.zIndex = 0;
+						}
+						this.actionTaken = this.commands.NOACTION;
+					}else{
+						this.btnAttack.active = false;
+						this.btnRun.active = false;
+					}
+			}else{
+				if(this.announceTick > this.announceLength){
+					this.announceTick = 0;
+					this.announcement = false;
+					this.playerTurn = !this.playerTurn;
+					if(this.failedRun == true){
 						this.playerTurn = false;
 						this.failedRun = false;
-					}else{
-						this.playerTurn = !this.playerTurn;
-					}
-					
-					if(this.battle_baddie.dead){
-						this.inBattle = false;
-						battleCanvas.style.zIndex = 0;
-						Game.player.numEnemiesKilled += 1;
-					}
-					if(Game.player.dead){
-						this.inBattle = false;
-						battleCanvas.style.zIndex = 0;
-					}
-					
-				}else{
-					this.btnAttack.active = false;
-					this.btnRun.active = false;
-				}
-			}else{
-				if(this.playerTurn === false){ // turn for the baddie to attack
-					if(this.failedRun === true){
-						//TODO make a real turn counter
-						this.dmgDisplayCounter = 0;
-						this.dmgText_Y_modifier = 0;
-						this.dmgText = ""
-						this.dmgAttack = true;
-						this.battleText = Game.player.name + " failed to run away!";
-					}else{
-						this.dmgDisplayCounter = 0;
-						this.dmgText_Y_modifier = 0;
-						var attack = this.battle_baddie.attack(Game.player);
-						this.dmgText = "-" + attack;
-						Game.player.health -= attack;
-						this.dmgAttack = true;
-						if(Game.player.health <= 0){
-							Game.player.dead = true;
-						}
-						this.battleText = this.battle_baddie.type + " attacked " + Game.player.name + " for " + attack + " dmg";
 					}
 				}
 			}
+			
+			if(this.battle_baddie.health <= 0 && this.battle_baddie.dead == false){
+				this.battle_baddie.dead = true;
+				if(Math.random() <= 0.45){
+					this.dropLoot = true;
+					this.battleText = this.battle_baddie.type+ " dropped a health potion!";
+					Game.player.inventory.addItem(Game.ItemGenerator("Health Potion Small", "HP Potion Sm"));
+					//this.announcement = true;
+					this.announceTick = 0;
+				}
+			}
+				
+				
+				return true;
+			}
+			
+			if(this.playerTurn === true){
+				switch(this.actionTaken){
+					case this.commands.ATTACK:
+						this.dmgDisplayCounter = 0;
+						this.dmgText_Y_modifier = 0;
+						var attack = Game.player.attack(this.battle_baddie);
+						this.dmgText = "-" + attack;
+						this.battle_baddie.health -= attack;
+						this.dmgAttack = true;
+						this.battleText =  Game.player.name + " attacked "+this.battle_baddie.type+" for " + attack + " dmg";
+						this.announcement = true;
+						//this.playerTurn = false;
+						break;
+					case this.commands.RUN:
+						if(Math.random() <= 0.5){
+							this.failedRun = true;
+							this.playerTurn = false;
+						}else{
+							this.inBattle = false; //Run Success
+							Game.battleCanvas.style.zIndex = 0;
+							this.exitBattle = 1;
+						}
+						break;
+					default:
+						break;//return this.inBattle; // we're waiting for the player to make a choice
+				}
+				
+			}else{ //Enemy turn
+				if(this.failedRun){
+					this.announcement = true;
+					this.announceTick = 0;
+					this.battleText = Game.player.name + " failed to run away!";
+					this.failedRun = true;
+				}else{
+					if(this.battle_baddie.dead === false)
+					this.enemyAttack();
+				}	
+			}
+
 			return this.inBattle;
 		}
 		
@@ -178,7 +252,7 @@
 			if(Math.random() <= 0.5){
 				battleScene
 			}else{
-				inBattle = false; //Run
+				this.inBattle = false; //Run
 				battleCanvas.style.zIndex = 0;
 			}
 		}

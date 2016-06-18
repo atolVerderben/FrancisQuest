@@ -11,6 +11,10 @@
 			this.treasure = null;
 		}
 		
+		Map.prototype.setImage = function(image){
+			this.image = image;
+		}
+		
 		// generate an example of a large map
 		Map.prototype.generate = function(){
 			var ctx = document.createElement("canvas").getContext("2d");		
@@ -32,20 +36,20 @@
 					//alert(rand);
 					var sx = 0;
 					var sy = 0;
-					if(rand <=50){
+					if(rand <=55){
 						sx = Terrain["Grass"].x;
 						sy = Terrain["Grass"].y;
 						
 					}
-					else if(rand > 50 && rand <= 60){
+					else if(rand > 55 && rand <= 65){
 						sx = Terrain["TallGrass"].x;
 						sy = Terrain["TallGrass"].y;
 					}
-					else if(rand > 60 && rand <=90){
+					else if(rand > 65 && rand <=95){
 						sx = Terrain["Weeds"].x;
 						sy = Terrain["Weeds"].y;
 					}
-					else if(rand > 90){
+					else if(rand > 95){
 						sx = Terrain["Flowers"].x;
 						sy = Terrain["Flowers"].y;
 					}

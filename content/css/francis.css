@@ -28,6 +28,13 @@ html, body {
     padding:0;
 }
 
+.interfaceButton{
+    position:absolute;
+    cursor:pointer;
+    border: 1px #140c1c solid;
+    
+}
+
 
 #mainOuter {
     width: 100%;

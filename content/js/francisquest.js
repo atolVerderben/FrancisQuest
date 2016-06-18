@@ -221,8 +221,9 @@
 			player.update(step, 800, 436);
 		}
 		var update = function (step) { }
-     var btnRestart = new Game.Button(hudCanvas.width/2 + hudCanvas.offsetLeft - 125, hudCanvas.height/2 + 350, 100, 100, "Restart", null);
-	 var btnNextLevel = new Game.Button(hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Next Level", null);
+     var btnRestart = new Game.Button("btnRestart",hudCanvas.width/2 + hudCanvas.offsetLeft - 125, hudCanvas.height/2 + 350, 100, 100, "Restart", null);
+	 var btnNextLevel = new Game.Button("btnNextLevel", hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Next Level", null);
+	 var btnQuit = new Game.Button("btnQuit", hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Quit", null);
 		
 var encounter = 0;
 
@@ -322,7 +323,7 @@ var encounter = 0;
 				}
 				currDayCount++;
 				
-				if(room.map.treasure.coordsWithin(player.x, player.y)){
+				if(room.map.treasure.overlaps(player.Bounds())){//coordsWithin(player.x, player.y)){
 					playerWin = true;
 					enemyList = [];
 				}
@@ -590,6 +591,7 @@ var encounter = 0;
 	Game.camera = camera;
 	Game.battleCanvas = battleCanvas;
 	Game.battleScene = battleScene;
+	Game.hudCanvas = hudCanvas;
 	
 		
 	})();

@@ -156,6 +156,9 @@
 	battle_scene_outside_night.src = "content/images/battle_scene_night.png";
 	var intro_house = new Image();
 	intro_house.src = "content/images/tiny32.png";
+    
+    var starter_village = new Image();
+    starter_village.src = "content/images/starter-village-2.png";
 
     // requestAnimationFrame polyfill
     // Thanks to: http://paulirish.com/2011/requestanimationframe-for-smart-animating/

@@ -9,8 +9,8 @@
 			this.y = y;
 			
 			// player attributes
-			this.health = 10; // restored by potion
-			this.stamina = 10; // restored by eating or potion
+			this.health = 15; // restored by potion
+			this.stamina = 15; // restored by "resting" TODO: restored by eating or potion
 			this.level = 1;
 			this.exp = 0;
 			this.exp_next_level = 100;
@@ -23,10 +23,15 @@
 			this.inventory = new Game.Inventory();
 			//this.inventory = [Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
 			this.maxHealth = this.setMaxHealth();
+			this.maxStamina = this.setMaxStamina();
 			
 			this.exitBattle = 0; // used as a cooldown so you can actually run from a battle and aren't constantly bombarded
 			
-			
+			//Counts the downtime until you get a "rest result". As in you are rewarded for standing still
+			this.restCount = 0;
+			this.restResult = 60;
+
+
 			//statistics!
 			this.numEnemiesKilled = 0;
 			this.dmgDealt = 0;
@@ -52,6 +57,13 @@
 			this.animationCounter = 0;
 			this.animationEndCounter = 10;
 		}
+
+		Player.prototype.increaseStamina = function(number){
+			this.stamina += number;
+			if(this.stamina > this.maxStamina){
+				this.stamina = this.maxStamina;
+			}
+		}
 		
 		Player.prototype.setgender = function(gender){
 			this.sprite = ((gender == "male")?MaleHero:FemaleHero);
@@ -59,6 +71,10 @@
 		}
 		
 		Player.prototype.setMaxHealth = function(){
+			return (10 + (5 * this.level));
+		}
+
+		Player.prototype.setMaxStamina = function(){
 			return (10 + (5 * this.level));
 		}
 		
@@ -77,6 +93,9 @@
 		
 		Player.prototype.levelUp = function(){
 			this.level++;
+			this.maxHealth = this.setMaxHealth();
+			this.maxStamina = this.setMaxStamina();
+			this.stamina = this.maxStamina;
 		}
 		
 		Player.prototype.reset = function(){
@@ -95,6 +114,9 @@
 			
 			// I'll actually use the attributes in the future, for now I know it's only adding health:
 			this.health += attr.amount;
+			if(this.health > this.maxHealth){
+				this.health = this.maxHealth
+			}
 			
 			//this.inventory.splice(index,1);
 		}
@@ -194,8 +216,38 @@
 			if(this.y + this.height/2 > worldHeight){
 				this.y = worldHeight - this.height/2;
 			}
+
+			//Player is standing still. Begin counting rest steps
+			if(!this.moving){
+				this.restCount++;
+				if(this.restCount >= this.restResult){
+					this.RestReward();
+					this.restCount = 0;
+				}
+				
+			}else{
+				this.restCount = 0;
+			}
 			
 			
+		}
+
+		Player.prototype.RestReward = function(){
+			this.stamina++;
+			if(this.stamina > this.maxStamina){
+				this.stamina = this.maxStamina;
+			}
+		}
+
+		Player.prototype.CheckAP = function(number){
+			if (this.stamina >= number){
+				return true;
+			}
+			return false;
+		}
+
+		Player.prototype.SubtractAP = function(number){
+			this.stamina -= number;
 		}
 		
 		Player.prototype.move = function(direction, step){

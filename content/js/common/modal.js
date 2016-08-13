@@ -60,7 +60,7 @@ var modal = (function () {
 
 		$close.click(function(e){
 				e.preventDefault();
-				method.close();
+				//method.close();
 		});
 
 		$overlay.click(function(e){

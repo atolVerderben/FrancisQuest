@@ -18,6 +18,13 @@
             
                
 	    }
+
+        Inventory.prototype.isFull = function(){
+            if(this.items.length >= 6){
+                return true
+            }
+            return false
+        }
         
         Inventory.prototype.addItem = function(item){
             this.items.push(item);
@@ -29,6 +36,7 @@
             this.items.splice(index,1);
             this.buttons = [];
             this.open = false;
+            this.openInventory();
             return item;
         }
         
@@ -37,7 +45,7 @@
                 this.open = false;
                 this.buttons = [];
                 Game.hudCanvas.onmouseup = function(e){};
-                return;
+                return this.open;
             }
             
             var leftEdge = Game.hudCanvas.width/2 - this.width/2;
@@ -46,7 +54,9 @@
             var count = 0;
             this.items.forEach(function(item){
                 
-               this.buttons.push(new Game.Button("inventory" + count, leftEdge +20, topEdge + startHeight, 100, 50, item.name, null));
+               this.buttons.push(new Game.Button("inventory" + count, leftEdge +20, topEdge + startHeight, 125, 50, item.name, null));
+               item.descX = leftEdge + 225;
+               item.descY = topEdge + startHeight + 20;
                startHeight += 60;
                count++;
             }.bind(this));
@@ -80,6 +90,7 @@
             */
             
             this.open = true;
+            return this.open;
         }
         
         Inventory.prototype.draw = function(ctx, canvas){
@@ -95,6 +106,14 @@
             this.buttons.forEach(function(button){
                 button.draw(ctx);
             })
+
+             ctx.font = "10pt Arial";
+	        ctx.fillStyle = '#deeed6';
+
+            this.items.forEach(function(item){
+                ctx.fillText("Increase health by " + item.attributes.amount, item.descX , item.descY);
+            })
+	        
             
         }
 

@@ -31,6 +31,7 @@
         var now = 0; // current timestamp
         var step = now-last; // time between frames
 		var inBattle = false;
+		var inInventory = false;
 		var dmgDisplayCounter = 0;
 		var dmgDisplayLength = 60;
 		var dmgAttack = false;
@@ -229,7 +230,7 @@ var encounter = 0;
 
 		// Game update function
 		var update_game = function(step){ 
-			if(!inBattle){
+			if(!inBattle && !inInventory){
 				player.update(step, room.width, room.height);
 				if(playerWin == false){
 					if(enemyList.length < 50 + (50 * player.level)){
@@ -331,19 +332,21 @@ var encounter = 0;
 				//Random Encounter Logic
 				if(player.moving === true && playerWin === false){
 					
-					encounter = Math.random();
-					if(encounter > 0.07 && encounter < 0.078){
+					//encounter = Math.random();
+					//if(encounter > 0.07 && encounter < 0.078){
 					    //inBattle = true;
 						//battleScene.initialize(battleCanvas);
 						
 						
-					}
+					//}
 				}
 			}
-			else{ // In A Battle
+			else if(inBattle){ // In A Battle
 			
 				inBattle = battleScene.update(step);
 				
+			}else if(inInventory){
+
 			}
 		}
 		
@@ -440,7 +443,8 @@ var encounter = 0;
 			enemyList.forEach(function(enemy){
 					enemy.draw(context, camera.xView, camera.yView);
 				});
-			textwriter.draw_text(ctxHUD, "Health " + player.health, "12pt Arial", 10, 20);
+			textwriter.draw_text(ctxHUD, "Health    " + player.health + " / " + player.maxHealth, "12pt Arial", 10, 20);
+			textwriter.draw_text(ctxHUD, "Stamina " + player.stamina + " / " + player.maxStamina, "12pt Arial", 10, 40);
 			textwriter.draw_text(ctxHUD, "Level " + player.level, "12pt Arial", 150, 20);
 			
 			if(playerWin == true){
@@ -581,8 +585,7 @@ var encounter = 0;
 		
 		Game.openInventory = function(){
 			
-			
-			player.inventory.openInventory();
+			inInventory = player.inventory.openInventory();
 			
 		}	
 		
@@ -647,6 +650,9 @@ var encounter = 0;
         		Game.player.moving = false;
 				break;
 			case 80: // key P pauses the game
+				Game.togglePause();
+				break;
+			case  27:
 				Game.togglePause();
 				break;
 			case 73: // I opens inventory

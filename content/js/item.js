@@ -3,7 +3,10 @@
 	        
 	        this.name = name;
 			this.type = type;
-			this.attributes = attributes;	        
+			this.attributes = attributes;
+
+			this.descX = 0;
+			this.descY = 0;	        
 	    }
 
 	    Game.Item = Item;

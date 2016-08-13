@@ -7,12 +7,14 @@
 				ATTACK : "Attack Command",
 				RUN : "Run Command",
 				NOACTION : "Wait for next action",
+				REST: "Restore some stamina",
 			}
 			
 			
 			this.battle_baddie = null;
-			this.btnAttack = new Game.Button("btnAttack", 88, 300, 100, 50, "ATTACK", null);
-			this.btnRun = new Game.Button("btnRun", 300, 300, 100, 50, "RUN", null);
+			this.btnAttack = new Game.Button("btnAttack", 50, 300, 100, 50, "ATTACK", null);
+			this.btnRun = new Game.Button("btnRun", 330, 300, 100, 50, "RUN", null);
+			this.btnRest = new Game.Button("btnRun", 188, 300, 100, 50, "REST", null);
 			this.dmgAttack = false;
 			this.inBattle = false;
 			
@@ -80,12 +82,20 @@
 					this.playerAction = true;
 					this.actionTaken = this.commands.ATTACK;
 				}
+
+
+				if (this.btnRest.rectangle.pointWithin(mouse) && this.btnRest.active) {
+					
+					this.playerAction = true;
+					this.actionTaken = this.commands.REST;
+				}
+
 			}.bind(this);
 			
 			battleCanvas.addEventListener("mousemove", function (e) {
 				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop));
 				//console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
-				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) || Game.battleScene.btnRun.rectangle.pointWithin(mouse)){
+				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) || Game.battleScene.btnRun.rectangle.pointWithin(mouse) || Game.battleScene.btnRest.rectangle.pointWithin(mouse)){
 					$('#battleCanvas').css('cursor', 'pointer');
 				} else {
 					$('#battleCanvas').css('cursor', 'default');
@@ -162,6 +172,7 @@
 						this.dmgText_Y_modifier = 0;
 						
 						this.btnAttack.active = true;
+						this.btnRest.active = true;
 						this.btnRun.active = true;
 						
 						if(this.battle_baddie.dead){
@@ -178,6 +189,7 @@
 					}else{
 						this.btnAttack.active = false;
 						this.btnRun.active = false;
+						this.btnRest.active = false;
 					}
 			}else{
 				if(this.announceTick > this.announceLength){
@@ -196,7 +208,11 @@
 				if(Math.random() <= 0.45){
 					this.dropLoot = true;
 					this.battleText = this.battle_baddie.type+ " dropped a health potion!";
-					Game.player.inventory.addItem(Game.ItemGenerator("Health Potion Small", "HP Potion Sm"));
+					if(Game.player.inventory.isFull()){
+						this.battleText = "Inventory Full!"
+					}else{
+						Game.player.inventory.addItem(Game.ItemGenerator("Health Potion Small", "HP Potion Sm"));
+					}
 					//this.announcement = true;
 					this.announceTick = 0;
 				}
@@ -208,7 +224,20 @@
 			
 			if(this.playerTurn === true){
 				switch(this.actionTaken){
+					case this.commands.REST:
+						Game.player.increaseStamina(5);
+						this.battleText =  Game.player.name + " rested and increased stamina";
+						this.announcement = true;
+						break;
 					case this.commands.ATTACK:
+						var AP = 2;
+						if(Game.player.CheckAP(AP)){
+							Game.player.SubtractAP(AP);
+						}else{
+							this.battleText =  Game.player.name + " does not have enough stamina!";
+							//this.announcement = true;
+							break;
+						}
 						this.dmgDisplayCounter = 0;
 						this.dmgText_Y_modifier = 0;
 						var attack = Game.player.attack(this.battle_baddie);
@@ -288,6 +317,7 @@
 			
 			// Let's Draw Some Buttons
 			this.btnAttack.draw(ctxBattle);
+			this.btnRest.draw(ctxBattle);
 			this.btnRun.draw(ctxBattle);
 			
 			// Draw Dmg Text

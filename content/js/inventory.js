@@ -1,7 +1,7 @@
 (function () {
 	    function Inventory() {
 	        
-            this.items = [Game.ItemGenerator("Health Potion Small", "HP Potion Sm")];
+            this.items = [Game.ItemGenerator("Health Potion", "HP Potion")];
             this.equip = {
                 head: "none",
                 body: "none",
@@ -25,6 +25,13 @@
             }
             return false
         }
+
+        Inventory.prototype.isEmpty = function(){
+            if(this.items.length == 0){
+                return true;
+            }
+            return false;
+        }
         
         Inventory.prototype.addItem = function(item){
             this.items.push(item);
@@ -36,7 +43,13 @@
             this.items.splice(index,1);
             this.buttons = [];
             this.open = false;
-            this.openInventory();
+            if(!Game.isBattle()){
+                            this.openInventory();
+                            
+                        }else{
+                            Game.battleScene.setAction("useitem");
+                        }
+            //this.openInventory();
             return item;
         }
         
@@ -67,6 +80,7 @@
                 this.buttons.forEach(function(button){
                    if (button.rectangle.pointWithin(mouse)) {
 					    Game.player.useItem(this.buttons.indexOf(button));
+                        
 				    }
                     i++;
                 }.bind(this));
@@ -111,7 +125,7 @@
 	        ctx.fillStyle = '#deeed6';
 
             this.items.forEach(function(item){
-                ctx.fillText("Increase health by " + item.attributes.amount, item.descX , item.descY);
+                ctx.fillText("Increase " + item.attributes.attr + " by " + item.attributes.amount, item.descX , item.descY);
             })
 	        
             

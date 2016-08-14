@@ -8,13 +8,18 @@
 				RUN : "Run Command",
 				NOACTION : "Wait for next action",
 				REST: "Restore some stamina",
+				ITEM: "Open inventory",
+				USEITEM: "Use an item from inventory",
 			}
 			
 			
 			this.battle_baddie = null;
-			this.btnAttack = new Game.Button("btnAttack", 50, 300, 100, 50, "ATTACK", null);
-			this.btnRun = new Game.Button("btnRun", 330, 300, 100, 50, "RUN", null);
-			this.btnRest = new Game.Button("btnRun", 188, 300, 100, 50, "REST", null);
+			var startX = 50;
+			var startY = 275;
+			this.btnAttack = new Game.Button("btnAttack", startX, startY, 100, 50, "ATTACK", null);
+			this.btnRest = new Game.Button("btnRest", startX + 250, startY, 100, 50, "REST", null);
+			this.btnRun = new Game.Button("btnRun", startX + 250, startY + 55, 100, 50, "RUN", null);
+			this.btnItem = new Game.Button("btnItem", startX, startY + 55, 100, 50, "ITEM", null);
 			this.dmgAttack = false;
 			this.inBattle = false;
 			
@@ -43,6 +48,18 @@
 			this.dropLoot = false;
 			this.failedRun = false;
 			
+			
+		}
+
+		BattleScene.prototype.setAction = function(action){
+			switch(action){
+				case "useitem":
+					this.actionTaken = this.commands.USEITEM;
+					break;
+				default:
+					this.actionTaken = this.commands.NOACTION;
+					break;
+			}
 			
 		}
 		
@@ -90,12 +107,19 @@
 					this.actionTaken = this.commands.REST;
 				}
 
+				if (this.btnItem.rectangle.pointWithin(mouse) && this.btnItem.active) {
+					
+					this.playerAction = true;
+					this.actionTaken = this.commands.ITEM;
+				}
+
 			}.bind(this);
 			
 			battleCanvas.addEventListener("mousemove", function (e) {
 				var mouse = getMousePosition(e).sub(new vector2d(Game.battleCanvas.offsetLeft, Game.battleCanvas.offsetTop));
 				//console.log("Mouse X: " + mouse.x + " Y:" + mouse.y);
-				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) || Game.battleScene.btnRun.rectangle.pointWithin(mouse) || Game.battleScene.btnRest.rectangle.pointWithin(mouse)){
+				if (Game.battleScene.btnAttack.rectangle.pointWithin(mouse) || Game.battleScene.btnRun.rectangle.pointWithin(mouse) || 
+				Game.battleScene.btnRest.rectangle.pointWithin(mouse) || Game.battleScene.btnItem.rectangle.pointWithin(mouse)){
 					$('#battleCanvas').css('cursor', 'pointer');
 				} else {
 					$('#battleCanvas').css('cursor', 'default');
@@ -174,6 +198,7 @@
 						this.btnAttack.active = true;
 						this.btnRest.active = true;
 						this.btnRun.active = true;
+						this.btnItem.active = true;
 						
 						if(this.battle_baddie.dead){
 							this.inBattle = false;
@@ -190,6 +215,7 @@
 						this.btnAttack.active = false;
 						this.btnRun.active = false;
 						this.btnRest.active = false;
+						this.btnItem.active = false;
 					}
 			}else{
 				if(this.announceTick > this.announceLength){
@@ -207,11 +233,17 @@
 				this.battle_baddie.dead = true;
 				if(Math.random() <= 0.45){
 					this.dropLoot = true;
-					this.battleText = this.battle_baddie.type+ " dropped a health potion!";
+					
 					if(Game.player.inventory.isFull()){
 						this.battleText = "Inventory Full!"
 					}else{
-						Game.player.inventory.addItem(Game.ItemGenerator("Health Potion Small", "HP Potion Sm"));
+						if(Math.random() <= 0.5){
+							Game.player.inventory.addItem(Game.ItemGenerator("Health Potion", "HP Potion"));
+							this.battleText = this.battle_baddie.type+ " dropped a health potion!";
+						}else{
+							Game.player.inventory.addItem(Game.ItemGenerator("Stamina Potion", "AP Potion"));
+							this.battleText = this.battle_baddie.type+ " dropped a stamina potion!";
+						}
 					}
 					//this.announcement = true;
 					this.announceTick = 0;
@@ -227,6 +259,20 @@
 					case this.commands.REST:
 						Game.player.increaseStamina(5);
 						this.battleText =  Game.player.name + " rested and increased stamina";
+						this.announcement = true;
+						break;
+					case this.commands.ITEM:
+						if(!Game.player.inventory.open && !Game.player.inventory.isEmpty()){
+							Game.player.inventory.openInventory();
+							Game.hudCanvas.style.zIndex = 20;
+						}
+						break;
+					case this.commands.USEITEM:
+						//if(Game.player.inventory.open){
+							//Game.player.inventory.openInventory();
+							Game.hudCanvas.style.zIndex = 0;
+						//}
+						this.battleText =  Game.player.name + " used an item";
 						this.announcement = true;
 						break;
 					case this.commands.ATTACK:
@@ -319,6 +365,7 @@
 			this.btnAttack.draw(ctxBattle);
 			this.btnRest.draw(ctxBattle);
 			this.btnRun.draw(ctxBattle);
+			this.btnItem.draw(ctxBattle);
 			
 			// Draw Dmg Text
 			if(this.dmgAttack){

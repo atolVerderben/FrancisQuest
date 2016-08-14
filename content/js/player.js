@@ -64,6 +64,13 @@
 				this.stamina = this.maxStamina;
 			}
 		}
+
+		Player.prototype.increaseHealth = function(number){
+			this.health += number;
+			if(this.health > this.maxHealth){
+				this.health = this.maxHealth;
+			}
+		}
 		
 		Player.prototype.setgender = function(gender){
 			this.sprite = ((gender == "male")?MaleHero:FemaleHero);
@@ -96,6 +103,7 @@
 			this.maxHealth = this.setMaxHealth();
 			this.maxStamina = this.setMaxStamina();
 			this.stamina = this.maxStamina;
+			this.increaseHealth(5); // increase the amount the max does (but do not add extra health on top of that)
 		}
 		
 		Player.prototype.reset = function(){
@@ -112,13 +120,15 @@
 		Player.prototype.useItem = function(index){
 			var attr = this.inventory.useItem(index).attributes;//this.inventory[index].attributes;
 			
-			// I'll actually use the attributes in the future, for now I know it's only adding health:
-			this.health += attr.amount;
-			if(this.health > this.maxHealth){
-				this.health = this.maxHealth
+			// Check type to appropriately update
+			switch(attr.attr){
+				case "health":
+					this.increaseHealth(attr.amount);
+					break;
+				case "stamina":
+					this.increaseStamina(attr.amount);
+					break;
 			}
-			
-			//this.inventory.splice(index,1);
 		}
 		
 		Player.prototype.Bounds = function(){

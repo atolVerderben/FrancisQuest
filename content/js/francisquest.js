@@ -370,6 +370,7 @@ var encounter = 0;
 		}
 		
 		var intro = function(){
+			//document.getElementById("introCanvas").style.zIndex=500;
 		
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			ctxVideo.clearRect(0, 0, canvas.width, canvas.height);
@@ -528,6 +529,7 @@ var encounter = 0;
 		}
 		
 		Game.init = function(){
+			
 			draw = intro;
 			playerWin = false;
 			player.dead = false;
@@ -536,6 +538,7 @@ var encounter = 0;
 			player.y = 32;
 			update = introMovie;
 			playVideo = true;
+
 			
 			//draw = draw_game;
 			//ctxVideo.clearRect(0, 0, introCanvas.width, introCanvas.height);
@@ -584,9 +587,14 @@ var encounter = 0;
 		}
 		
 		Game.openInventory = function(){
+			if(!inBattle){
+				inInventory = player.inventory.openInventory();
+			}
 			
-			inInventory = player.inventory.openInventory();
-			
+		}
+
+		Game.isBattle = function(){
+			return inBattle;
 		}	
 		
 		// ---
@@ -595,6 +603,7 @@ var encounter = 0;
 	Game.battleCanvas = battleCanvas;
 	Game.battleScene = battleScene;
 	Game.hudCanvas = hudCanvas;
+	
 	
 		
 	})();

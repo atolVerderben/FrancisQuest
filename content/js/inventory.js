@@ -14,7 +14,9 @@
             //drawing properties
             this.width = 400;
             this.height = 400;
-            this.buttons = new Array();    
+            this.buttons = new Array();
+
+            this.closeRect = new Game.Rectangle(0, 0, 24, 23);
             
                
 	    }
@@ -47,6 +49,7 @@
                             this.openInventory();
                             
                         }else{
+                            
                             Game.battleScene.setAction("useitem");
                         }
             //this.openInventory();
@@ -84,6 +87,15 @@
 				    }
                     i++;
                 }.bind(this));
+                if(this.closeRect.pointWithin(mouse)){
+                    if(Game.isBattle()){
+                        Game.battleScene.setAction("idle");
+                        Game.hudCanvas.style.zIndex = 2;
+                        this.openInventory();
+                    }else{
+                    Game.openInventory(); // close inventory
+                    }
+            }
 			}.bind(this);
             
             
@@ -112,9 +124,13 @@
             ctx.fillStyle = "#2b3b5f";
 				
             ctx.globalAlpha = 0.75;
-            ctx.fillRect(canvas.width/2 - this.width/2, canvas.height/2 - this.height/2, this.width, this.height);
+            var rectX = canvas.width/2 - this.width/2;
+            var rectY = canvas.height/2 - this.height/2;
+
             
+            ctx.fillRect(rectX, rectY, this.width, this.height);
             
+            this.closeRect.set(rectX + (this.width - 25), rectY);
             ctx.globalAlpha = 1;
             
             this.buttons.forEach(function(button){
@@ -128,7 +144,8 @@
                 ctx.fillText("Increase " + item.attributes.attr + " by " + item.attributes.amount, item.descX , item.descY);
             })
 	        
-            
+            ctx.drawImage(close_image, rectX + (this.width - 25), rectY);
+            //ctx.fillRect(this.closeRect.left, this.closeRect.top, this.closeRect.width, this.closeRect.height);
         }
 
 	    Game.Inventory = Inventory;

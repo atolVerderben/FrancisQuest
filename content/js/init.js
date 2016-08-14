@@ -160,6 +160,8 @@
     var starter_village = new Image();
     starter_village.src = "content/images/starter-village-2.png";
 
+    var close_image = new Image();
+    close_image.src = "content/images/grey_boxCross.png";
     // requestAnimationFrame polyfill
     // Thanks to: http://paulirish.com/2011/requestanimationframe-for-smart-animating/
     (function(){	

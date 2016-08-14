@@ -1,7 +1,7 @@
     var MaleHero = {
-      IdleDown:{x:0, y:257, h:32, w:32},
-      WalkDown1:{x:32, y:257, h:32, w:32},
-      WalkDown2:{x:64, y:257, h:32, w:32},
+      IdleDown:{x:0, y:256, h:32, w:32},
+      WalkDown1:{x:32, y:256, h:32, w:32},
+      WalkDown2:{x:64, y:256, h:32, w:32},
       
       IdleLeft:{x:0, y:288, h:32, w:32},
       WalkLeft1:{x:32, y:288, h:32, w:32},
@@ -20,9 +20,9 @@
     };
 	
 	var FemaleHero = {
-      IdleDown:{x:96, y:257, h:32, w:32},
-      WalkDown1:{x:128, y:257, h:32, w:32},
-      WalkDown2:{x:160, y:257, h:32, w:32},
+      IdleDown:{x:96, y:256, h:32, w:32},
+      WalkDown1:{x:128, y:256, h:32, w:32},
+      WalkDown2:{x:160, y:256, h:32, w:32},
       
       IdleLeft:{x:96, y:288, h:32, w:32},
       WalkLeft1:{x:128, y:288, h:32, w:32},
@@ -101,9 +101,9 @@
     };
 	
 	var Ghost = {
-      IdleDown:{x:192, y:385, h:32, w:32},
-      WalkDown1:{x:224, y:385, h:32, w:32},
-      WalkDown2:{x:256, y:385, h:32, w:32},
+      IdleDown:{x:192, y:384, h:32, w:32},
+      WalkDown1:{x:224, y:384, h:32, w:32},
+      WalkDown2:{x:256, y:384, h:32, w:32},
       
       IdleLeft:{x:192, y:416, h:32, w:32},
       WalkLeft1:{x:224, y:416, h:32, w:32},

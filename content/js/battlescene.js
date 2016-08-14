@@ -34,7 +34,7 @@
 			
 			this.announcement = false;
 			this.announceTick = 0;
-			this.announceLength = 10;
+			this.announceLength = 45;
 			
 			this.attacking = false;
 			this.actionTaken = this.commands.NOACTION;
@@ -202,13 +202,13 @@
 						
 						if(this.battle_baddie.dead){
 							this.inBattle = false;
-							battleCanvas.style.zIndex = 0;
+							
 							Game.player.exitBattle = 1;
 							Game.player.numEnemiesKilled += 1;
 						}
 						if(Game.player.dead){
 							this.inBattle = false;
-							battleCanvas.style.zIndex = 0;
+							//battleCanvas.style.zIndex = 0;
 						}
 						this.actionTaken = this.commands.NOACTION;
 					}else{
@@ -262,7 +262,11 @@
 						this.announcement = true;
 						break;
 					case this.commands.ITEM:
-						if(!Game.player.inventory.open && !Game.player.inventory.isEmpty()){
+						if(!Game.player.inventory.open){
+							if(Game.player.inventory.isEmpty()){
+								this.battleText =  "Inventory empty.";
+								break;
+							}
 							Game.player.inventory.openInventory();
 							Game.hudCanvas.style.zIndex = 20;
 						}
@@ -270,7 +274,7 @@
 					case this.commands.USEITEM:
 						//if(Game.player.inventory.open){
 							//Game.player.inventory.openInventory();
-							Game.hudCanvas.style.zIndex = 0;
+							Game.hudCanvas.style.zIndex = 2;
 						//}
 						this.battleText =  Game.player.name + " used an item";
 						this.announcement = true;
@@ -319,7 +323,9 @@
 					this.enemyAttack();
 				}	
 			}
-
+			if(!this.inBattle){
+				battleCanvas.style.zIndex = 0;
+			}
 			return this.inBattle;
 		}
 		

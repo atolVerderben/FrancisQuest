@@ -11,8 +11,13 @@
 			
 			color = ((color) ?  color: "#deeed6");
 			color = ((color == "white") ?  "#deeed6": color);
+			color = ((color == "black") ?  "#140c1c": color);
 			align = ((align) ? align : "left");
 			backColor = ((backColor) ?  backColor: "#140c1c");
+			backColor = ((backColor == "white") ?  "#deeed6": backColor);
+
+
+			
 			
 			ctx.textAlign = align;
 			ctx.fillStyle = color;	

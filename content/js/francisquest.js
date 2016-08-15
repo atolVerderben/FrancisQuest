@@ -454,15 +454,19 @@ var encounter = 0;
             ctxHUD.strokeRect(1, 1, 215, 50);
 
 			var color = "white";
+			var backColor = "#d04648";
 			if(player.health <= 5){
 				color = "#d04648"
+				backColor = null;
 			}
-			textwriter.draw_text(ctxHUD, "Health    " + player.displayHealth() + " / " + player.maxHealth, "12pt Arial", 10, 20, "left", color, "#d04648");
+			textwriter.draw_text(ctxHUD, "Health    " + player.displayHealth() + " / " + player.maxHealth, "12pt Arial", 10, 20, "left", color, backColor);
 			color = "white";
+			backColor = "#346524";
 			if(player.stamina < 5){
 				color = "#d04648"
+				backColor = null;
 			}
-			textwriter.draw_text(ctxHUD, "Stamina " + player.displayStamina() + " / " + player.maxStamina, "12pt Arial", 10, 40, "left", color, "#346524");
+			textwriter.draw_text(ctxHUD, "Stamina " + player.displayStamina() + " / " + player.maxStamina, "12pt Arial", 10, 40, "left", color, backColor);
 			textwriter.draw_text(ctxHUD, "Level " + player.level, "12pt Arial", 150, 20);
 			
 			if(playerWin == true){

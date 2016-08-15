@@ -112,6 +112,7 @@
 			this.maxHealth = this.setMaxHealth();
 			this.maxStamina = this.setMaxStamina();
 			this.stamina = this.maxStamina;
+			this.physicalAttack += 2;
 			this.increaseHealth(5); // increase the amount the max does (but do not add extra health on top of that)
 		}
 		
@@ -149,9 +150,11 @@
 			switch(attr.attr){
 				case "health":
 					this.increaseHealth(attr.amount);
+					this.displayText("+" + attr.amount, "#d04648")
 					break;
 				case "stamina":
 					this.increaseStamina(attr.amount);
+					this.displayText("+" + attr.amount, "#346524")
 					break;
 			}
 		}
@@ -287,7 +290,7 @@
 		}
 
 		Player.prototype.RestReward = function(){
-			this.displayText("+1");
+			this.displayText("+1", "#346524");
 			this.stamina++;
 			if(this.stamina > this.maxStamina){
 				this.stamina = this.maxStamina;
@@ -322,24 +325,22 @@
 			}
 		}
 		
-		Player.prototype.draw = function(context, xView, yView){		
+		Player.prototype.test_draw = function(context, xView, yView){		
+			// Draw black rectangle to represent character
 			context.save();		
 			context.fillStyle = "black";
-
-			
-
-
-
 			// before draw we need to convert player world's position to canvas position			
 			context.fillRect((this.x-this.width/2) - xView, (this.y-this.height/2) - yView, this.width, this.height);
 			context.restore();			
 		}
 
-	Player.prototype.displayText = function(text){
+	Player.prototype.displayText = function(text, color){
+		color = ((color) ?  color: "#deeed6");
 		this.txt = text;
 		this.txtDisplay = true;
 		this.txt_Y_modifier = 0;
 		this.txtDisplayCounter = 0;
+		this.txtColor = color;
 	}
     
     Player.prototype.animated_draw = function(context, xView, yView){
@@ -381,12 +382,12 @@
 	  
       context.save();
 	  var drawX = (this.x-this.width/2) - xView;
-	  var drawY = (this.y-this.height/2)- yView
+	  var drawY = (this.y-this.height/2)- yView;
       context.drawImage(texture, this.sx, this.sy, this.sw, this.sh, drawX, drawY, this.width, this.height);
 	  // Draw Dmg Text
 	if(this.txtDisplay){
 		this.textWriter.draw_text(context, this.txt, "12pt Arial",
-		drawX, drawY + this.txt_Y_modifier, "center", "#346524" );
+		drawX, drawY + this.txt_Y_modifier, "center", this.txtColor );
 	}
       context.restore();
       

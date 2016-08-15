@@ -7,14 +7,16 @@
 			
 		}
 		
-		TextWriter.prototype.draw_text = function(ctx, text, font, x, y, align, color){
+		TextWriter.prototype.draw_text = function(ctx, text, font, x, y, align, color, backColor){
 			
-			color = ((color) ?  color: "#FFFFFF");
+			color = ((color) ?  color: "#deeed6");
+			color = ((color == "white") ?  "#deeed6": color);
 			align = ((align) ? align : "left");
+			backColor = ((backColor) ?  backColor: "#140c1c");
 			
 			ctx.textAlign = align;
 			ctx.fillStyle = color;	
-			ctx.strokeStyle = "#140c1c";
+			ctx.strokeStyle = backColor;
 			ctx.font = font;
 			ctx.strokeText(text, x+2 ,y+2);
 			ctx.font = font;

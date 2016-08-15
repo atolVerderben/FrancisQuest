@@ -116,6 +116,22 @@
 			this.dmgDealt = 0;
 			this.exitBattle = 0;
 		}
+
+		Player.prototype.displayHealth = function(){
+			var health = this.health;
+			if(this.health < 10){
+				health = "0" + health;
+			}
+			return health;
+		}
+
+		Player.prototype.displayStamina = function(){
+			var stamina = this.stamina;
+			if(this.stamina < 10){
+				stamina = "0" + stamina;
+			}
+			return stamina;
+		}
 		
 		Player.prototype.useItem = function(index){
 			var attr = this.inventory.useItem(index).attributes;//this.inventory[index].attributes;

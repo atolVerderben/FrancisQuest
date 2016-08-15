@@ -444,8 +444,25 @@ var encounter = 0;
 			enemyList.forEach(function(enemy){
 					enemy.draw(context, camera.xView, camera.yView);
 				});
-			textwriter.draw_text(ctxHUD, "Health    " + player.health + " / " + player.maxHealth, "12pt Arial", 10, 20);
-			textwriter.draw_text(ctxHUD, "Stamina " + player.stamina + " / " + player.maxStamina, "12pt Arial", 10, 40);
+			
+			
+			// Create HUD "box"
+			ctxHUD.fillStyle = "#2b3b5f";
+			ctxHUD.globalAlpha = 0.75;
+            ctxHUD.fillRect(1, 1, 215, 50);
+            ctxHUD.strokeStyle = "#deeed6";
+            ctxHUD.strokeRect(1, 1, 215, 50);
+
+			var color = "white";
+			if(player.health <= 5){
+				color = "#d04648"
+			}
+			textwriter.draw_text(ctxHUD, "Health    " + player.displayHealth() + " / " + player.maxHealth, "12pt Arial", 10, 20, "left", color, "#d04648");
+			color = "white";
+			if(player.stamina < 5){
+				color = "#d04648"
+			}
+			textwriter.draw_text(ctxHUD, "Stamina " + player.displayStamina() + " / " + player.maxStamina, "12pt Arial", 10, 40, "left", color, "#346524");
 			textwriter.draw_text(ctxHUD, "Level " + player.level, "12pt Arial", 150, 20);
 			
 			if(playerWin == true){
@@ -636,6 +653,23 @@ var encounter = 0;
 				Game.controls.down = true;
        
 				break;
+
+			case 65: // a
+				Game.controls.left = true;
+       
+				break;
+			case 87: // w
+				Game.controls.up = true;
+       
+				break;
+			case 68: // d
+				Game.controls.right = true;
+       
+				break;
+			case 83: // s
+				Game.controls.down = true;
+       
+				break;
 		}
 	}, false);
 
@@ -658,10 +692,30 @@ var encounter = 0;
 				Game.controls.down = false;
         		Game.player.moving = false;
 				break;
-			case 80: // key P pauses the game
+
+			
+			case 65: // a 
+				Game.controls.left = false;
+        		Game.player.moving = false;
+				break;
+			case 87: // w
+				Game.controls.up = false;
+        		Game.player.moving = false;
+				break;
+			case 68: // d
+				Game.controls.right = false;
+        		Game.player.moving = false;
+				break;
+			case 83: // s
+				Game.controls.down = false;
+        		Game.player.moving = false;
+				break;
+			
+
+			case 80: // P pauses the game
 				Game.togglePause();
 				break;
-			case  27:
+			case  27: // Escape also pauses the game
 				Game.togglePause();
 				break;
 			case 73: // I opens inventory

@@ -721,7 +721,11 @@ var encounter = 0;
 			case 73: // I opens inventory
 				
 				Game.openInventory();
-				break;		
+				break;
+			case 69: // E opens inventory
+				
+				Game.openInventory();
+				break;			
 		}
 		
 		e.preventDefault();

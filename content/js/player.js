@@ -31,6 +31,15 @@
 			this.restCount = 0;
 			this.restResult = 60;
 
+			// Display text over character
+			this.txtDisplayCounter = 0;
+			this.txtDisplayLength = 30;
+			this.txtDisplay = false;
+			this.txt = "";
+			this.txt_Y_modifier = 0;
+			this.txtColor = "white";
+			this.textWriter = new Game.TextWriter();
+
 
 			//statistics!
 			this.numEnemiesKilled = 0;
@@ -167,6 +176,23 @@
 					this.exitBattle = 0;
 				}
 			}
+
+			if(this.txtDisplay){
+				this.txtDisplayCounter++;
+				if(this.txtDisplayLength/this.txtDisplayCounter < 4){
+					this.txt_Y_modifier++;
+				}else{
+					this.txt_Y_modifier--;
+				}
+				
+				if(this.txtDisplayCounter > this.txtDisplayLength){
+					this.txtDisplay = false;
+				}
+			}
+
+
+
+
 			
 			if(Game.controls.left){
 				if(this.moving && (this.facing == "Up" || this.facing == "Down")){}else{
@@ -247,7 +273,9 @@
 			if(!this.moving){
 				this.restCount++;
 				if(this.restCount >= this.restResult){
-					this.RestReward();
+					if(this.stamina < this.maxStamina){
+						this.RestReward();
+					}
 					this.restCount = 0;
 				}
 				
@@ -259,6 +287,7 @@
 		}
 
 		Player.prototype.RestReward = function(){
+			this.displayText("+1");
 			this.stamina++;
 			if(this.stamina > this.maxStamina){
 				this.stamina = this.maxStamina;
@@ -294,16 +323,29 @@
 		}
 		
 		Player.prototype.draw = function(context, xView, yView){		
-			// draw a simple rectangle shape as our player model
 			context.save();		
 			context.fillStyle = "black";
+
+			
+
+
+
 			// before draw we need to convert player world's position to canvas position			
 			context.fillRect((this.x-this.width/2) - xView, (this.y-this.height/2) - yView, this.width, this.height);
 			context.restore();			
 		}
+
+	Player.prototype.displayText = function(text){
+		this.txt = text;
+		this.txtDisplay = true;
+		this.txt_Y_modifier = 0;
+		this.txtDisplayCounter = 0;
+	}
     
     Player.prototype.animated_draw = function(context, xView, yView){
-      if(this.moving){
+      
+	  
+	  if(this.moving){
 		  if(this.animationStep == 2 || this.animationStep == 4){
 			this.sx = this.sprite["Idle" + this.facing].x;
 			this.sy = this.sprite["Idle" + this.facing].y;
@@ -338,7 +380,14 @@
 	  }
 	  
       context.save();
-      context.drawImage(texture, this.sx, this.sy, this.sw, this.sh, (this.x-this.width/2) - xView, (this.y-this.height/2)- yView, this.width, this.height);
+	  var drawX = (this.x-this.width/2) - xView;
+	  var drawY = (this.y-this.height/2)- yView
+      context.drawImage(texture, this.sx, this.sy, this.sw, this.sh, drawX, drawY, this.width, this.height);
+	  // Draw Dmg Text
+	if(this.txtDisplay){
+		this.textWriter.draw_text(context, this.txt, "12pt Arial",
+		drawX, drawY + this.txt_Y_modifier, "center", "#346524" );
+	}
       context.restore();
       
     }

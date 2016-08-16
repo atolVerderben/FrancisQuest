@@ -1,4 +1,4 @@
-canvas {
+canvas.inGame {
     padding: 0;
     margin: auto;
     display: block;
@@ -8,6 +8,10 @@ canvas {
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.hidden{
+    display: none;
 }
 
 .NightTime{
@@ -35,10 +39,13 @@ html, body {
     
 }
 
-h5{
+h3, h5{
     margin:0;
     padding: 0;
 }
+
+.tab { margin-left: 40px; }
+.indent { margin-left: 20px; }
 
 ul {
     list-style: circle outside;

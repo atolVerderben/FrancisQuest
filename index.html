@@ -1,22 +1,43 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Francis Quest</title>
-     <link rel="stylesheet" href="content/css/francis.css"/>
+    <title>
+        Francis Quest
+    </title>
+    <link rel="stylesheet" href="content/css/francis.css"/>
+    <link href="content/css/modal.css" type="text/css" rel="stylesheet" />
+<meta charset="UTF-8">
 </head>
-<body>
+<body id="MAIN">
     <div id="mainOuter">
         <div id="inner">
-            <h1  onclick="window.open('francisquest.html')" style='cursor:pointer'>Francis Quest</h1>
-            <a href="https://github.com/atolVerderben/FrancisQuest" target="_blank">GitHub Repository</a></br/><br/>
-            <h5>Objective</h5>
-            <p>
+<div id="divTitle">
+    <br/><br/><br/>
+</div>
+    <!-- An Assortment of Canvases to provide the needed layers for an HTML5 Game-->
+<canvas id="battleCanvas" width=448 height=384 class="hidden" style="z-index: 0"></canvas>
+<canvas id="introCanvas" width=800 height=384 style="z-index: 5"></canvas>
+<canvas id="hudCanvas" width=800 height=400 class="hidden" style="z-index: 2"></canvas>
+<canvas id="gameCanvas" width=800 height=400 class="hidden" style="z-index: 1">
+    <br/>
+    <h4>Francis Quest</h4>
+    <p>
+        You start the game by picking a male or a female protagonist.
+        You then run around a randomly generated field and look for a treasure chest.
+        Enemies are randomly generated and wander aimlessly on the screen. They consist of a ghost, skeleton, bat, or slime.
+        If your character collides with an enemy you are sent a battle screen where you combat the enemy in turn based combat.
+        Once you find the treasure chest you may advance to the next level which increases the number of enemies, the amount of
+        health each enemy can potentially have, player maximum health, and player maximum stamina.
+    </p>
+</canvas>
+<div id="divDesc">
+<h3>Objective</h3>
+            <p class="tab">
                 Francis has lost his/her favorite treasure chest in the great plains.<br/>
                 You must quest to retrieve it while fighting or avoiding baddies along the way!<br/>
                 Once the treasure has been collected you may choose to continue your adventure where the map increases in size and the enemies increase in number and health! See how long you can last!<br/>
             </p>
-             <h5>Features</h5>
+             <h3>Features</h3>
                 <ul>
                     <li>
                         Randomly placed treasure to "win" each level
@@ -28,26 +49,81 @@
                         Health and Stamina increase with each level (for both the player and enemies)
                     </li>
                 </ul>
-            <h5>Controls</h5>
-                <b>I / E</b>: Access your Inventory.<br/>
-                <b>Esc / P</b>: Pause/Resume the game<br/>
-                <b>Mouse</b>: Used to interact with menus<br/>
-                <b>Arrow Keys / WASD</b>: Controls Movement<br/>
-            </p>
-            <div onclick="window.open('francisquest.html')" style='cursor:pointer' >
-            <b>Click the image below to begin your quest!</b><br/>
-            <img src='content/images/francis-intro.png' alt="Image of the intro to Francis Quest" />
-            </div>
-            <h5>About</h5>
-             <p>
-                 This is a game written entirely in Javascript with no 3rd party game engine libraries<br/>
-                <a href="https://github.com/atolVerderben/FrancisQuest" target="_blank">GitHub Repository</a></br/>
-             </p>
-           
+            <h3>Controls</h3>
+                <ul>
+                <li><b>I / E</b>: Access your Inventory</li>
+                <li><b>Esc / P</b>: Pause/Resume the game</li>
+               <li> <b>Mouse</b>: Used to interact with menus</li>
+                <li><b>Arrow Keys / WASD</b>: Controls Movement</li>
+                </ul>
+        
+            <h3>About Francis Quest</h3>
+            <p>
 
-                
-             
+                <h5 class="indent">Art</h5>
+                <div class="tab">
+                Credit: <a href="http://opengameart.org/content/tiny-16-basic" target="_blank">Lanea Zimmerman.</a><br />
+                Provided under: <a href="content/licenses/OGA-BY-3.0.txt" target="_blank">OGA By 3.0 license</a><br/>
+                </div>
+                <h5 class="indent">Code</h5>
+                <div class="tab">
+                Credit: atolVerderben (me!)<br/>
+                <a href="https://github.com/atolVerderben/FrancisQuest" target="_blank">GitHub Repository</a></br/><br/>
+                </div>
+            </p>
+</div>
+    
         </div> <!-- End Inner -->
     </div> <!-- End Outer -->
+    
+    <!-- Pause Menu-->
+    <div id="divLicense" style="display:none">
+        
+        <div style="text-align:center;cursor:pointer;" onclick="Game.togglePause()"><h1>Paused</h1></div>
+
+       <h3>Controls</h3>
+                <ul>
+                <li><b>I / E</b>: Access your Inventory</li>
+                <li><b>Esc / P</b>: Pause/Resume the game</li>
+               <li> <b>Mouse</b>: Used to interact with menus</li>
+                <li><b>Arrow Keys / WASD</b>: Controls Movement</li>
+                </ul>
+        
+            <h3>About Francis Quest</h3>
+            <p>
+
+                <h5 class="indent">Art</h5>
+                <div class="tab">
+                Credit: <a href="http://opengameart.org/content/tiny-16-basic" target="_blank">Lanea Zimmerman.</a><br />
+                Provided under: <a href="content/licenses/OGA-BY-3.0.txt" target="_blank">OGA By 3.0 license</a><br/>
+                </div>
+                <h5 class="indent">Code</h5>
+                <div class="tab">
+                Credit: atolVerderben (me!)<br/>
+                <a href="https://github.com/atolVerderben/FrancisQuest" target="_blank">GitHub Repository</a></br/><br/>
+                </div>
+            </p>
+        <div style="text-align:center;text-decoration:underline;color:#597dce;cursor:pointer" onclick="Game.togglePause()">
+            Resume
+        </div>
+    </div>
 </body>
+
 </html>
+
+
+<script src="content/js/common/jquery-1.11.3.min.js"></script>
+<script src="content/js/common/modal.js"></script>
+<script src="content/js/vector2d.js"></script>
+<script src="content/js/init.js"></script>
+<script src="content/js/rectangle.js"></script>
+<script src="content/js/camera.js"></script>
+<script src="content/js/inventory.js"></script>
+<script src="content/js/item.js"></script>
+<script src="content/js/player.js"></script>
+<script src="content/js/enemy.js"></script>
+<script src="content/js/button.js"></script>
+<script src="content/js/battlescene.js"></script>
+<script src="content/js/map.js"></script>
+<script src="content/js/textwriter.js"></script>
+<script src="content/js/francisquest.js"></script>

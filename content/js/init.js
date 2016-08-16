@@ -236,13 +236,7 @@
 
 		   }
 		
-		// When the canvas is resized we need to update the camera parameters as well to center on the character.
-		Game.camera.wView = canvas.width;
-		Game.camera.hView = canvas.height;
-		Game.camera.xDeadZone = canvas.width/2;
-		Game.camera.yDeadZone = canvas.height/2;
-		
-		Game.camera.viewportRect = new Game.Rectangle(Game.camera.xView, Game.camera.yView, Game.camera.wView, Game.camera.hView);	
+			Game.resizeElements();
 		
 		return false;
 	}

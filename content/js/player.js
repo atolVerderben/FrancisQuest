@@ -118,10 +118,12 @@
 		}
 		
 		Player.prototype.reset = function(){
-			this.health = 10;
 			this.level = 1;
 			this.inventory = new Game.Inventory();//[Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
 			this.maxHealth = this.setMaxHealth();
+			this.maxStamina = this.setMaxStamina();
+			this.health = this.maxHealth;
+			this.stamina = this.maxStamina;
 			
 			this.numEnemiesKilled = 0;
 			this.dmgDealt = 0;

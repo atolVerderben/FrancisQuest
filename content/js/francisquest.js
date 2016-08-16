@@ -15,6 +15,13 @@
 		
 		var enemyList = [];
 
+
+
+
+		var btnRestart = new Game.Button("btnRestart",hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 + 200, 100, 100, "Restart", null);
+	 	var btnNextLevel = new Game.Button("btnNextLevel", hudCanvas.width/2 + hudCanvas.offsetLeft - 200, hudCanvas.height/2 +200, 100, 100, "Next Level", null);
+	 	var btnQuit = new Game.Button("btnQuit", hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Quit", null);
+
 	    //create background songs
 		//var backgroundMusic = document.createElement("audio");
 		//backgroundMusic.setAttribute("src", "content/sounds/Town_-_Hillside_Hamlet_Reprise.mp3");
@@ -37,6 +44,7 @@
 		var dmgAttack = false;
 		var dmgText = "";
 		var dmgText_Y_modifier = 0;
+		var running = false;
 		
 		var isDay = true;
 		var currDayCount = 0;
@@ -165,6 +173,7 @@
 				Game.controls.left = false;
 				playVideo = false;
 				update = update_game;
+				running = true;
 				draw = draw_game;
 				ctxVideo.clearRect(0, 0, introCanvas.width, introCanvas.height);
 				player.x = worldWidth/2;
@@ -222,9 +231,7 @@
 			player.update(step, 800, 436);
 		}
 		var update = function (step) { }
-     var btnRestart = new Game.Button("btnRestart",hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 + 350, 100, 100, "Restart", null);
-	 var btnNextLevel = new Game.Button("btnNextLevel", hudCanvas.width/2 + hudCanvas.offsetLeft - 200, hudCanvas.height/2 +350, 100, 100, "Next Level", null);
-	 var btnQuit = new Game.Button("btnQuit", hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Quit", null);
+     
 		
 var encounter = 0;
 
@@ -527,7 +534,18 @@ var encounter = 0;
 		
 		Game.restart = function(){
 			hudCanvas.onmouseup = function(e){};
+
+			document.getElementById('divTitle').style.display = "block";
+			document.getElementById('divDesc').style.display = "block";
+
+			battleCanvas.className = "hidden";
+			introCanvas.className = "";
+			hudCanvas.className = "hidden";
+			canvas.className = "hidden";
+
+
 			$("#hudCanvas").off();
+			running = false;
 			isDay = true;
 			currDayCount = 0;
 			$("#MAIN").css("background-color", "#deeed6");
@@ -565,6 +583,10 @@ var encounter = 0;
 			//ctxVideo.clearRect(0, 0, introCanvas.width, introCanvas.height);
 			//Game.play();
 		}
+
+		Game.isRunning = function(){
+			return running;
+		}
 		
 		
 		
@@ -577,7 +599,10 @@ var encounter = 0;
 			}
 		}
 		
-		Game.togglePause = function(){		
+		Game.togglePause = function(){
+			if(!running){
+				return;
+			}		
 			if(runningId == -1){
 				Game.play();
 				modal.close();
@@ -612,6 +637,20 @@ var encounter = 0;
 				inInventory = player.inventory.openInventory();
 			}
 			
+		}
+
+		Game.resizeElements = function(){
+			btnRestart = new Game.Button("btnRestart",hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 + 100, 100, 100, "Restart", null);
+			btnNextLevel = new Game.Button("btnNextLevel", hudCanvas.width/2 + hudCanvas.offsetLeft - 200, hudCanvas.height/2 +100, 100, 100, "Next Level", null);
+			btnQuit = new Game.Button("btnQuit", hudCanvas.width/2 + hudCanvas.offsetLeft + 100, hudCanvas.height/2 +350, 100, 100, "Quit", null);
+
+			// When the canvas is resized we need to update the camera parameters as well to center on the character.
+			camera.wView = canvas.width;
+			camera.hView = canvas.height;
+			camera.xDeadZone = canvas.width/2;
+			camera.yDeadZone = canvas.height/2;
+			
+			camera.viewportRect = new Game.Rectangle(Game.camera.xView, Game.camera.yView, Game.camera.wView, Game.camera.hView);
 		}
 
 		Game.isBattle = function(){
@@ -746,7 +785,14 @@ var encounter = 0;
 	}
 	
 	function StartTheGame(gender){
-		
+		document.getElementById('divTitle').style.display = "none";
+		document.getElementById('divDesc').style.display = "none";
+
+		document.getElementById("battleCanvas").className = "inGame";
+		document.getElementById("introCanvas").className = "inGame";
+		document.getElementById("hudCanvas").className = "inGame";
+		document.getElementById("gameCanvas").className = "inGame";
+
 		Game.player.setgender(gender);
 		Game.init();
 		document.getElementById("introCanvas").style.zIndex=0;

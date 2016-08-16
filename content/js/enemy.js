@@ -6,9 +6,13 @@
 
 				// Create a semi-random set up for the enemies
 				this.level = playerLevel;
-
 			
 				this.health = Game.rollDice(this.level, 12);
+				// Limit the maximum health to 99 for now
+				if (this.health >= 100){
+					this.health = 99;
+				}
+				this.stamina = 10; // not currently used
 				this.phyiscalAttack = 8;
 				this.defense = 4;
 				
@@ -71,6 +75,33 @@
 		
 		Enemy.prototype.coordsWithin = function(x, y){
 			return (x > this.x && x < (this.x + this.width*2) && y > this.y && y < (this.y + this.height*2));
+		}
+
+		Enemy.prototype.displayHealth = function(){
+			var health = this.health;
+			if(health < 10){
+				if(health < 0){
+					health = 0;
+				}
+				health = "0" + health;
+			}
+			return health;
+		}
+
+		Enemy.prototype.displayStamina = function(){
+			var stamina = this.stamina;
+			if(this.stamina < 10){
+				stamina = "0" + stamina;
+			}
+			return stamina;
+		}
+
+		Enemy.prototype.displayType = function(){
+			var enemyType = this.type;
+			while(enemyType.length < 8){
+				enemyType = " " + enemyType;
+			}
+			return enemyType;
 		}
 		
 		Enemy.prototype.move = function(direction, step){

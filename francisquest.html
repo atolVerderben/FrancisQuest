@@ -14,7 +14,17 @@
 <canvas id="battleCanvas" width=448 height=384 style="position:absolute;z-index: 0"></canvas>
 <canvas id="introCanvas" width=800 height=384 style="position:absolute;z-index: 5"></canvas>
 <canvas id="hudCanvas" width=800 height=400 style="position:absolute;z-index: 2"></canvas>
-<canvas id="gameCanvas" width=800 height=400 style="position:absolute;z-index: 1"></canvas>
+<canvas id="gameCanvas" width=800 height=400 style="position:absolute;z-index: 1">
+    <h4>Francis Quest</h4>
+    <p>
+        You start the game by picking a male or a female protagonist.
+        You then run around a randomly generated field and look for a treasure chest.
+        Enemies are randomly generated and wander aimlessly on the screen. They consist of a ghost, skeleton, bat, or slime.
+        If your character collides with an enemy you are sent a battle screen where you combat the enemy in turn based combat.
+        Once you find the treasure chest you may advance to the next level which increases the number of enemies, the amount of
+        health each enemy can potentially have, player maximum health, and player maximum stamina.
+    </p>
+</canvas>
 
     <!-- Pause Menu-->
     <div id="divLicense" style="display:none">
@@ -22,7 +32,7 @@
         <div style="text-align:center;cursor:pointer;" onclick="Game.togglePause()"><h1>Paused</h1></div>
 
         <p>
-            <h5>Controls</h5>
+            <b>Controls</b>
             <p>
                 <b>I / E</b>: Access your Inventory.<br/>
                 <b>Esc / P</b>: Pause/Resume the game<br/>
@@ -31,9 +41,13 @@
             </p>
         </p>
         <p>
-            <h5>About Francis Quest</h5>
-            Art credit <a href="http://opengameart.org/content/tiny-16-basic" target="_blank">Lanea Zimmerman.</a><br />
-            Provided under <a href="content/licenses/OGA-BY-3.0.txt" target="_blank">OGA By 3.0 license</a>
+            <b>About Francis Quest</b>
+            <h5>Art</h5>
+            Credit: <a href="http://opengameart.org/content/tiny-16-basic" target="_blank">Lanea Zimmerman.</a><br />
+            Provided under: <a href="content/licenses/OGA-BY-3.0.txt" target="_blank">OGA By 3.0 license</a><br/>
+            <h5>Code</h5>
+            Credit: atolVerderben (me!)<br/>
+            <a href="https://github.com/atolVerderben/FrancisQuest" target="_blank">GitHub Repository</a></br/><br/>
         </p>
         <div style="text-align:center;text-decoration:underline;color:#597dce;cursor:pointer" onclick="Game.togglePause()">
             Resume

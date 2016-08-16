@@ -1,4 +1,5 @@
-	
+	/// <reference path="francisquest.js" />
+
 	// wrapper for "class" Player
 	(function(){
 		function Player(x, y){

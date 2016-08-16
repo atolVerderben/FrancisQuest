@@ -344,9 +344,11 @@
 			}else{
 				ctxBattle.drawImage(battle_scene_outside_night, 0, 0);
 			}
+
 			
-			this.textWriter.draw_text(ctxBattle, this.battle_baddie.type + ": " + this.battle_baddie.health + " HP", 
-			"12pt Arial", battleCanvas.width - (battleCanvas.width/8), 20, "center", "#8595a1");
+			
+			this.textWriter.draw_text(ctxBattle, this.battle_baddie.displayType() + ": " + this.battle_baddie.displayHealth() + " HP", 
+			"12pt Arial", battleCanvas.width - (battleCanvas.width/8) - 10, 20, "center", "#8595a1");
 			
 			
 			this.battle_baddie.draw_battle_scene(ctxBattle);
@@ -373,6 +375,8 @@
 			this.btnRun.draw(ctxBattle);
 			this.btnItem.draw(ctxBattle);
 			
+			this.drawBorder(ctxBattle, "#442434", 448, 384);
+
 			// Draw Dmg Text
 			if(this.dmgAttack){
 				if(this.playerTurn){
@@ -385,6 +389,13 @@
 				}
 				
 			}
+		}
+
+		BattleScene.prototype.drawBorder = function(ctx, color, width, height){
+			ctx.strokeStyle = color;
+            ctx.strokeRect(0, 0, width, height);
+			ctx.strokeRect(1, 1, width-1, height-1);
+			ctx.strokeRect(2, 2, width-2, height-2);
 		}
 		
 		Game.BattleScene = BattleScene;

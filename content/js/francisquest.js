@@ -456,9 +456,9 @@ var encounter = 0;
 			// Create HUD "box"
 			ctxHUD.fillStyle = "#2b3b5f";
 			ctxHUD.globalAlpha = 0.75;
-            ctxHUD.fillRect(1, 1, 215, 50);
+            ctxHUD.fillRect(1, 1, 220, 50);
             ctxHUD.strokeStyle = "#deeed6";
-            ctxHUD.strokeRect(1, 1, 215, 50);
+            ctxHUD.strokeRect(1, 1, 220, 50);
 
 			var color = "white";
 			var backColor = "#d04648";
@@ -475,6 +475,7 @@ var encounter = 0;
 			}
 			textwriter.draw_text(ctxHUD, "Stamina " + player.displayStamina() + " / " + player.maxStamina, "12pt Arial", 10, 40, "left", color, backColor);
 			textwriter.draw_text(ctxHUD, "Level " + player.level, "12pt Arial", 150, 20);
+			//textwriter.draw_text(ctxHUD, "Inventory", "12pt Arial", 150, 40);
 			
 			if(playerWin == true){
 				context.fillStyle = 'rgba(43,43,43,0.5)';

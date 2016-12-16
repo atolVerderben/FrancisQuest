@@ -11,7 +11,7 @@
 			
 			// player attributes
 			this.health = 15; // restored by potion
-			this.stamina = 15; // restored by "resting" TODO: restored by eating or potion
+			this.stamina = 15; // restored by "resting" or potion
 			this.level = 1;
 			this.exp = 0;
 			this.exp_next_level = 100;
@@ -119,7 +119,7 @@
 		
 		Player.prototype.reset = function(){
 			this.level = 1;
-			this.inventory = new Game.Inventory();//[Game.ItemGenerator("Health Potion Small", "Small Health Potion")];
+			this.inventory = new Game.Inventory();
 			this.maxHealth = this.setMaxHealth();
 			this.maxStamina = this.setMaxStamina();
 			this.health = this.maxHealth;
